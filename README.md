@@ -11,13 +11,11 @@ Date Selection tool & Inline calendar for Node.js telegram bots.
 
 </div>
 
-## 📱 Demo
-
 ## 📙 Description
 
 Using this simple inline calendar you can allow your Telegram bot to ask dates.
 
-![Demo](https://github.com/VDS13/telegram-inline-calendar/blob/main/demo.gif "Demo")
+<img src="https://github.com/VDS13/telegram-inline-calendar/blob/main/demo.gif" width="250" height="250"/>
 
 Supported languages:
 * English
