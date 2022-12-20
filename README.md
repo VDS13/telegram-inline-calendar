@@ -14,6 +14,13 @@ Date Selection tool & Inline calendar for Node.js telegram bots.
 ## 📙 Description
 
 Using this simple inline calendar you can allow your Telegram bot to ask dates.
+Supported languages:
+* English
+* French
+* Russian
+* Spanish
+* Italian
+* German
 
 Supported Telegram bot libraries:
 * [Telegraf](https://github.com/telegraf/telegraf)
@@ -108,4 +115,14 @@ bot.on("callbackQuery", (query) => {
     }
 });
 bot.connect();
+```
+
+## ⚙️ Default options
+
+```javascript
+{
+	date_format: 'YYYY-MM-DD',                     //date result format
+    language: 'en',                                //language (en/es/de/es/fr/it)
+    bot_api: 'node-telegram-bot-api'               //telegram bot library
+}
 ```
