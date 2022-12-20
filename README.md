@@ -2,7 +2,7 @@
 
 <div align="center">
 
-Date Selection tool & Inline calendar for Aiogram telegram bots.
+Date Selection tool & Inline calendar for Node.js telegram bots.
 
 
 [![Bot API](https://img.shields.io/badge/Bot%20API-v.6.3-00aced.svg?style=flat-square&logo=telegram)](https://core.telegram.org/bots/api)
