@@ -126,3 +126,9 @@ bot.connect();
     bot_api: 'node-telegram-bot-api'               //telegram bot library
 }
 ```
+
+## License
+
+**The MIT License (MIT)**
+
+Copyright © 2022 Dmitry Vyazin
