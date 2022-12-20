@@ -1,0 +1,33 @@
+{
+  "name": "telegram-inline-calendar",
+  "version": "1.0.0",
+  "description": "Date Selection tool & Inline calendar for Node.js telegram bots",
+  "main": "./index.js",
+  "directories": {
+    "example": "examples"
+  },
+  "scripts": {
+    "test": "echo \"Hello\""
+  },
+  "author": "Dmitry Vyazin <mit_vjazin@mail.ru>",
+  "license": "MIT",
+  "engines": {
+    "node": ">=0.12"
+  },
+  "keywords": [
+    "telegram",
+    "bot",
+    "calendar"
+  ],
+  "dependencies": {
+    "dayjs": "^1.11.7"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/VDS13/telegram-inline-calendar.git"
+  },
+  "bugs": {
+    "url": "https://github.com/VDS13/telegram-inline-calendar/issues"
+  },
+  "homepage": "https://github.com/VDS13/telegram-inline-calendar"
+}
