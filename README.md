@@ -121,7 +121,7 @@ bot.connect();
 
 ```javascript
 {
-	date_format: 'YYYY-MM-DD',                     //date result format
+    date_format: 'YYYY-MM-DD',                     //date result format
     language: 'en',                                //language (en/es/de/es/fr/it)
     bot_api: 'node-telegram-bot-api'               //telegram bot library
 }
