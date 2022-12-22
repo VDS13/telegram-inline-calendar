@@ -26,7 +26,7 @@ Calendar
 <a name="Calendar+startNavCalendar"></a>
 
 ### calendar.startNavCalendar(msg)
-Generating and sending a calendar to the user. Set current month and year
+Generating and sending a calendar to the user. Set current month and year.
 
 **Kind**: instance method of [<code>Calendar</code>](#Calendar)  
 
@@ -40,7 +40,7 @@ Generating and sending a calendar to the user. Set current month and year
 Handle clicking on the calendar.
 
 **Kind**: instance method of [<code>Calendar</code>](#Calendar)  
-**Returns**: <code>String \| Number</code> - If a date is selected, it will return a string in the specified format, otherwise it will return -1
+**Returns**: <code>String \| Number</code> - If a date is selected, it will return a string in the specified format, otherwise it will return -1.
 
 | Param | Type | Description |
 | --- | --- | --- |
