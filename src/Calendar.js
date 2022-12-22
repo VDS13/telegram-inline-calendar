@@ -9,6 +9,7 @@ module.exports = class Calendar {
         this.options.language = (typeof options.language === 'undefined') ? 'en' : options.language;
         this.options.date_format = (typeof options.date_format === 'undefined') ? 'YYYY-MM-DD' : options.date_format;
         this.options.bot_api = (typeof options.bot_api === 'undefined') ? 'node-telegram-bot-api' : options.bot_api;
+        this.options.close_calendar = (typeof options.bot_api === 'undefined') ? true : options.close_calendar;
     }
     twoDigits(num) {
         if (num < 10)
@@ -137,7 +138,8 @@ module.exports = class Calendar {
                     break;
                 case '0':
                     this.chats.delete(query.message.chat.id);
-                    this.deleteMessage(query);
+                    if (this.options.close_calendar === true)
+                        this.deleteMessage(query);
                     res = dayjs(code[1]).format(this.options.date_format);
             }
         }

@@ -36,6 +36,9 @@ Supported Telegram bot libraries:
 ```sh
 npm i telegram-inline-calendar
 ```
+## [🎚️ Changelog](https://github.com/VDS13/telegram-inline-calendar/blob/main/CHANGELOG.md)
+
+## [🗺 API](https://github.com/VDS13/telegram-inline-calendar/blob/main/API.md)
 
 ## 🚀 Usage
 
@@ -127,7 +130,8 @@ bot.connect();
 {
     date_format: 'YYYY-MM-DD',                     //date result format
     language: 'en',                                //language (en/es/de/es/fr/it)
-    bot_api: 'node-telegram-bot-api'               //telegram bot library
+    bot_api: 'node-telegram-bot-api',              //telegram bot library
+    close_calendar: true                           //Close calendar after date selection
 }
 ```
 
