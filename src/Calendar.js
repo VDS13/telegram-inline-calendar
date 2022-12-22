@@ -137,9 +137,10 @@ module.exports = class Calendar {
                     this.editMessageReplyMarkup(date, query);
                     break;
                 case '0':
-                    this.chats.delete(query.message.chat.id);
-                    if (this.options.close_calendar === true)
+                    if (this.options.close_calendar === true) {
                         this.deleteMessage(query);
+                        this.chats.delete(query.message.chat.id);
+                    }
                     res = dayjs(code[1]).format(this.options.date_format);
             }
         }

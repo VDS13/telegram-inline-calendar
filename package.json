@@ -1,6 +1,6 @@
 {
   "name": "telegram-inline-calendar",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Date Selection tool & Inline calendar for Node.js telegram bots",
   "main": "./index.js",
   "directories": {
@@ -17,7 +17,11 @@
   "keywords": [
     "telegram",
     "bot",
-    "calendar"
+    "calendar",
+    "telegraf",
+    "telebot",
+    "node-telegram-bot-api",
+    "inline-keyboard"
   ],
   "dependencies": {
     "dayjs": "^1.11.7"
