@@ -59,9 +59,9 @@ module.exports = class Calendar {
         cnk.resize_keyboard = true;
         cnk.inline_keyboard = [];
         cnk.inline_keyboard.push([{},{},{}]);
-        cnk.inline_keyboard[0][0] = {text: '<<', callback_data: 'n_' + date + '_--'};
+        cnk.inline_keyboard[0][0] = {text: '<<', callback_data: 'n_' + dayjs(date).format("YYYY") + '_--'};
         cnk.inline_keyboard[0][1] = {text: lang.month3[this.options.language][date.getMonth()] + ' ' + date.getFullYear(), callback_data: ' '};
-        cnk.inline_keyboard[0][2] = {text: '>>', callback_data: 'n_' + date + '_++'};
+        cnk.inline_keyboard[0][2] = {text: '>>', callback_data: 'n_' + dayjs(date).format("YYYY") + '_++'};
         cnk.inline_keyboard.push([{},{},{},{},{},{},{}]);
         for(j = 0; j < 7; j++) {
             cnk.inline_keyboard[1][j] = {text: lang.week[this.options.language][j], callback_data: ' '};
@@ -79,9 +79,9 @@ module.exports = class Calendar {
             }
         }
         cnk.inline_keyboard.push([{},{},{}]);
-        cnk.inline_keyboard[cr - 1][0] = {text: '<', callback_data: 'n_' + date + '_-'};
+        cnk.inline_keyboard[cr - 1][0] = {text: '<', callback_data: 'n_' + dayjs(date).format("YYYY-MM") + '_-'};
         cnk.inline_keyboard[cr - 1][1] = {text: ' ', callback_data: ' '};
-        cnk.inline_keyboard[cr - 1][2] = {text: '>', callback_data: 'n_' + date + '_+'};
+        cnk.inline_keyboard[cr - 1][2] = {text: '>', callback_data: 'n_' + dayjs(date).format("YYYY-MM") + '_+'};
         return cnk;
     }
     startNavCalendar(msg) {

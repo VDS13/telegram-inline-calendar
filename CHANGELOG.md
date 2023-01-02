@@ -4,6 +4,12 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## [1.1.2][1.1.2] - 2023-01-02
+
+[issues#1](https://github.com/VDS13/telegram-inline-calendar/issues/1)
+
+Fixed bug with `callback_data` overflow.
+
 ## [1.1.1][1.1.1] - 2022-12-22
 
 Hotfix ```close_calendar```.
