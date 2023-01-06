@@ -1,6 +1,6 @@
 {
   "name": "telegram-inline-calendar",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "Date Selection tool & Inline calendar for Node.js telegram bots",
   "main": "./index.js",
   "directories": {
