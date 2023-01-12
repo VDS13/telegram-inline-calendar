@@ -22,6 +22,7 @@ Calendar
 | [options.date_format] | <code>String</code> | <code>"YYYY-MM-DD"</code> | Date output format. |
 | [options.bot_api] | <code>String</code> | <code>"node-telegram-bot-api"</code> | Telegram bot library. |
 | [options.close_calendar] | <code>Boolean</code> | <code>true</code> | Close calendar after date selection. |
+| [options.start_week_day] | <code>Number</code> | <code>0</code> | First day of the week (Sunday - `0`, Monday - `1`, Tuesday - `2` and so on). |
 
 <a name="Calendar+startNavCalendar"></a>
 

@@ -31,6 +31,14 @@
         "fr": "Veuillez sélectionner une date:",
         "it": "Seleziona una data:"
     },
+    "selecttime": {
+        "ru": "Пожалуйста, выберите время:",
+        "en": "Please select a time:",
+        "de": "Bitte wählen Sie eine Zeit aus:",
+        "es": "Seleccione una hora:",
+        "fr": "Veuillez sélectionner une heure:",
+        "it": "Seleziona un orario:"
+    },
     "navigafion": {
         "ru": "Навигационный календарь",
         "en": "Navigation Calendar",
@@ -46,5 +54,13 @@
         "es": "Calendario de diálogo",
         "fr": "Calendrier de dialogue",
         "it": "Calendario di dialogo"
+    },
+    "back": {
+        "ru": "Назад",
+        "en": "Back",
+        "de": "Zurück",
+        "es": "Atrás",
+        "fr": "Dos",
+        "it": "Indietro"
     }
 }

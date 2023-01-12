@@ -131,7 +131,8 @@ bot.connect();
     date_format: 'YYYY-MM-DD',                     //date result format
     language: 'en',                                //language (en/es/de/es/fr/it)
     bot_api: 'node-telegram-bot-api',              //telegram bot library
-    close_calendar: true                           //Close calendar after date selection
+    close_calendar: true,                          //Close calendar after date selection
+    start_week_day: 0                              //First day of the week(Sunday - `0`, Monday - `1`, Tuesday - `2` and so on)
 }
 ```
 

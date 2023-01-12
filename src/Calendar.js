@@ -10,6 +10,13 @@ module.exports = class Calendar {
         this.options.date_format = (typeof options.date_format === 'undefined') ? 'YYYY-MM-DD' : options.date_format;
         this.options.bot_api = (typeof options.bot_api === 'undefined') ? 'node-telegram-bot-api' : options.bot_api;
         this.options.close_calendar = (typeof options.bot_api === 'undefined') ? true : options.close_calendar;
+        this.options.start_week_day = (typeof options.start_week_day === 'undefined') ? 0 : options.start_week_day;
+    }
+    weekDaysButtons(day) {
+        return (day + this.options.start_week_day > 6) ? (day + this.options.start_week_day - 7) : (day + this.options.start_week_day);
+    }
+    startWeekDay(day) {
+        return (day - this.options.start_week_day < 0) ? (day - this.options.start_week_day + 7) : (day - this.options.start_week_day);
     }
     twoDigits(num) {
         if (num < 10)
@@ -17,7 +24,7 @@ module.exports = class Calendar {
         return num
     }
     colRowNavigation(date, cd) {
-        var tmp = cd - 7 + date.getDay();
+        var tmp = cd - 7 + this.startWeekDay(date.getDay());
         return Math.ceil(tmp/7) + 4;
     }
     howMuchDays(year, month) {
@@ -25,7 +32,7 @@ module.exports = class Calendar {
         var date2 = new Date(year, month, 1);
         return Math.round((date2 - date1) / 1000 / 3600 / 24); 
     }
-    editMessageReplyMarkup(date, query) {
+    editMessageReplyMarkupCalendar(date, query) {
         if (this.options.bot_api == 'node-telegram-bot-api')
             this.bot.editMessageReplyMarkup(this.createNavigationKeyboard(date),{message_id: query.message.message_id, chat_id: query.message.chat.id});
         else if (this.options.bot_api == 'telegraf')
@@ -35,7 +42,7 @@ module.exports = class Calendar {
             this.bot.editMessageReplyMarkup({messageId: query.message.message_id, chatId: query.message.chat.id}, menu);
         }
     }
-    sendMessage(menu, msg) {
+    sendMessageCalendar(menu, msg) {
         if (this.options.bot_api == 'node-telegram-bot-api')
             this.bot.sendMessage(msg.chat.id, lang.select[this.options.language], menu).then((msg_promise) => this.chats.set(msg_promise.chat.id, msg_promise.message_id));
         else if (this.options.bot_api == 'telegraf')
@@ -64,13 +71,13 @@ module.exports = class Calendar {
         cnk.inline_keyboard[0][2] = {text: '>>', callback_data: 'n_' + dayjs(date).format("YYYY") + '_++'};
         cnk.inline_keyboard.push([{},{},{},{},{},{},{}]);
         for(j = 0; j < 7; j++) {
-            cnk.inline_keyboard[1][j] = {text: lang.week[this.options.language][j], callback_data: ' '};
+            cnk.inline_keyboard[1][j] = {text: lang.week[this.options.language][this.weekDaysButtons(j)], callback_data: ' '};
         }
         var d = 1;
         for (i = 2; i <= cr - 2; i++) {
             cnk.inline_keyboard.push([{},{},{},{},{},{},{}]);
             for(j = 0; j < 7; j++) {
-                if ((i == 2 && j < date.getDay()) || d > cd) {
+                if ((i == 2 && j < this.startWeekDay(date.getDay())) || d > cd) {
                     cnk.inline_keyboard[i][j] = {text: ' ', callback_data: ' '};
                 } else {
                     cnk.inline_keyboard[i][j] = {text: d, callback_data: 'n_' + date.getFullYear() + '-' + this.twoDigits(date.getMonth() + 1) + '-' + this.twoDigits(d) + '_0'};
@@ -95,7 +102,7 @@ module.exports = class Calendar {
             menu.replyMarkup = this.createNavigationKeyboard(now);
         else
             menu.reply_markup = this.createNavigationKeyboard(now);
-        this.sendMessage(menu, msg);
+        this.sendMessageCalendar(menu, msg);
     }
     clickButtonCalendar(query) {
         if (query.data == ' ') {
@@ -109,12 +116,12 @@ module.exports = class Calendar {
                 case '++':
                     date = new Date(code[1]);
                     date.setFullYear(date.getFullYear() + 1);
-                    this.editMessageReplyMarkup(date, query);
+                    this.editMessageReplyMarkupCalendar(date, query);
                     break;
                 case '--':
                     date = new Date(code[1]);
                     date.setFullYear(date.getFullYear() - 1);
-                    this.editMessageReplyMarkup(date, query);
+                    this.editMessageReplyMarkupCalendar(date, query);
                     break;
                 case '+':
                     date = new Date(code[1]);
@@ -124,7 +131,7 @@ module.exports = class Calendar {
                     } else {
                         date.setMonth(date.getMonth() + 1);
                     }
-                    this.editMessageReplyMarkup(date, query);
+                    this.editMessageReplyMarkupCalendar(date, query);
                     break;
                 case '-':
                     date = new Date(code[1]);
@@ -134,7 +141,7 @@ module.exports = class Calendar {
                     } else {
                         date.setMonth(date.getMonth() - 1);
                     }
-                    this.editMessageReplyMarkup(date, query);
+                    this.editMessageReplyMarkupCalendar(date, query);
                     break;
                 case '0':
                     if (this.options.close_calendar === true) {
