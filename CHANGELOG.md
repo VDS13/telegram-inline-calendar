@@ -4,6 +4,11 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## [1.3.0][1.3.0] - 2023-01-14
+
+Added time selector (can be used in conjunction with the calendar and separately).
+More details in the [API](https://github.com/VDS13/telegram-inline-calendar/blob/main/API.md) and [examples](https://github.com/VDS13/telegram-inline-calendar/blob/main/EXAMPLES.md)
+
 ## [1.2.1][1.2.1] - 2023-01-14
 
 Hotfix ```close_calendar```.

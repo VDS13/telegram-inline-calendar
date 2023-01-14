@@ -39,6 +39,14 @@
         "fr": "Veuillez sélectionner une heure:",
         "it": "Seleziona un orario:"
     },
+    "selectdatetime": {
+        "ru": "Пожалуйста, выберите дату и время:",
+        "en": "Please select a date and time:",
+        "de": "Bitte wählen Sie ein Datum und eine Uhrzeit aus:",
+        "es": "Por favor seleccione una fecha y hora:",
+        "fr": "Veuillez sélectionner une date et une heure:",
+        "it": "Si prega di selezionare una data e un'ora:"
+    },
     "navigafion": {
         "ru": "Навигационный календарь",
         "en": "Navigation Calendar",
