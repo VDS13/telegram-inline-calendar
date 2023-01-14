@@ -6,7 +6,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [1.2.1][1.2.1] - 2023-01-14
 
-Fixed bug with `close_calendar` overflow.
+Hotfix ```close_calendar```.
 
 ## [1.2.0][1.2.0] - 2023-01-12
 
