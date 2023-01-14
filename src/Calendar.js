@@ -9,7 +9,7 @@ module.exports = class Calendar {
         this.options.language = (typeof options.language === 'undefined') ? 'en' : options.language;
         this.options.date_format = (typeof options.date_format === 'undefined') ? 'YYYY-MM-DD' : options.date_format;
         this.options.bot_api = (typeof options.bot_api === 'undefined') ? 'node-telegram-bot-api' : options.bot_api;
-        this.options.close_calendar = (typeof options.bot_api === 'undefined') ? true : options.close_calendar;
+        this.options.close_calendar = (typeof options.close_calendar === 'undefined') ? true : options.close_calendar;
         this.options.start_week_day = (typeof options.start_week_day === 'undefined') ? 0 : options.start_week_day;
     }
     weekDaysButtons(day) {
