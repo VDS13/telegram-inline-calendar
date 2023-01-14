@@ -16,7 +16,7 @@ Date Selection tool & Inline calendar for Node.js telegram bots.
 
 Using this simple inline calendar you can allow your Telegram bot to ask dates.
 
-<img src="https://github.com/VDS13/telegram-inline-calendar/blob/main/img/demo.gif" width="400"/>
+<img src="https://github.com/VDS13/telegram-inline-calendar/blob/main/img/demo2.gif" width="400"/>
 
 Supported languages:
 * English
@@ -130,11 +130,14 @@ bot.connect();
 
 ```javascript
 {
-    date_format: 'YYYY-MM-DD',                     //date result format
-    language: 'en',                                //language (en/es/de/es/fr/it)
+    date_format: 'YYYY-MM-DD',                     //Datetime result format
+    language: 'en',                                //Language (en/es/de/es/fr/it)
     bot_api: 'node-telegram-bot-api',              //telegram bot library
     close_calendar: true,                          //Close calendar after date selection
     start_week_day: 0                              //First day of the week(Sunday - `0`, Monday - `1`, Tuesday - `2` and so on)
+    time_selector_mod: false,                      //Enable time selection after a date is selected.
+    time_range: "00:00-23:59",                     //Allowed time range in "HH:mm-HH:mm" format
+    time_step: "30m"                               //Time step in the format "\<Time step\>\<m \| h\>"
 }
 ```
 

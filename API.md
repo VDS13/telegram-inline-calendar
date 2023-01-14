@@ -26,7 +26,7 @@ Calendar
 | [options.close_calendar] | <code>Boolean</code> | <code>true</code> | Close calendar after date selection. |
 | [options.start_week_day] | <code>Number</code> | <code>0</code> | First day of the week (Sunday - `0`, Monday - `1`, Tuesday - `2` and so on). |
 | [options.time_selector_mod] | <code>Boolean</code> | <code>false</code> | Enable time selection after a date is selected. |
-| [options.time_range] | <code>String</code> | <code>"00:00-23:59"</code> | Allowed time range in "HH:mm-HH:mm" format.. |
+| [options.time_range] | <code>String</code> | <code>"00:00-23:59"</code> | Allowed time range in "HH:mm-HH:mm" format. |
 | [options.time_step] | <code>String</code> | <code>"30m"</code> | Time step in the format "\<Time step\>\<m \| h\>", where "m" - minutes, "h" - hours. (For example: <code>"30m"</code>, <code>"1h"</code>, <code>"150m"</code>). |
 
 <a name="Calendar+startNavCalendar"></a>
