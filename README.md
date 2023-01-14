@@ -40,6 +40,8 @@ npm i telegram-inline-calendar
 
 ## [🗺 API](https://github.com/VDS13/telegram-inline-calendar/blob/main/API.md)
 
+## [🖥️ Examples](https://github.com/VDS13/telegram-inline-calendar/blob/main/EXAMPLES.md)
+
 ## 🚀 Usage
 
 ### node-telegram-bot-api
