@@ -2,7 +2,7 @@
 
 <div align="center">
 
-Date Selection tool & Inline calendar for Node.js telegram bots.
+Date and time picker and Inline calendar for Node.js telegram bots.
 
 
 [![Bot API](https://img.shields.io/badge/Bot%20API-v.6.3-00aced.svg?style=flat-square&logo=telegram)](https://core.telegram.org/bots/api)
@@ -134,7 +134,7 @@ bot.connect();
     language: 'en',                                //Language (en/es/de/es/fr/it)
     bot_api: 'node-telegram-bot-api',              //telegram bot library
     close_calendar: true,                          //Close calendar after date selection
-    start_week_day: 0                              //First day of the week(Sunday - `0`, Monday - `1`, Tuesday - `2` and so on)
+    start_week_day: 0,                             //First day of the week(Sunday - `0`, Monday - `1`, Tuesday - `2` and so on)
     time_selector_mod: false,                      //Enable time selection after a date is selected.
     time_range: "00:00-23:59",                     //Allowed time range in "HH:mm-HH:mm" format
     time_step: "30m"                               //Time step in the format "\<Time step\>\<m \| h\>"
