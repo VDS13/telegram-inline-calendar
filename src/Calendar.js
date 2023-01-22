@@ -1,10 +1,8 @@
 const lang = require("./language.json");
-const dayjs = require('dayjs')
+const dayjs = require('dayjs');
 
 module.exports = class Calendar {
     constructor(bot, options = {}) {
-        this.bot = bot;
-        this.chats = new Map();
         this.options = options;
         this.options.language = (typeof options.language === 'undefined') ? 'en' : options.language;
         this.options.date_format = (typeof options.date_format === 'undefined') ? 'YYYY-MM-DD' : options.date_format;
@@ -14,6 +12,86 @@ module.exports = class Calendar {
         this.options.time_selector_mod = (typeof options.time_selector_mod === 'undefined') ? false : options.time_selector_mod;
         this.options.time_range = (typeof options.time_range === 'undefined') ? "00:00-23:59" : options.time_range;
         this.options.time_step = (typeof options.time_step === 'undefined') ? "30m" : options.time_step;
+        this.bot = bot;
+        this.chats = new Map();
+        this.libraryInitialization();
+    }
+    NodeTelegramBotApi = {
+        editMessageReplyMarkupCalendar(date, query) {
+            this.bot.editMessageReplyMarkup(this.createNavigationKeyboard(date),{message_id: query.message.message_id, chat_id: query.message.chat.id})
+        },
+        editMessageReplyMarkupTime(date, query, from_calendar) {
+            this.bot.editMessageReplyMarkup(this.createTimeSelector(date, from_calendar),{message_id: query.message.message_id, chat_id: query.message.chat.id})
+        },
+        sendMessageCalendar(menu, msg) {
+            var l = (this.options.time_selector_mod === true) ? lang.selectdatetime[this.options.language] : lang.select[this.options.language];
+            this.bot.sendMessage(msg.chat.id, l, menu).then((msg_promise) => this.chats.set(msg_promise.chat.id, msg_promise.message_id));
+        },
+        sendMessageTime(menu, msg) {
+            this.bot.sendMessage(msg.chat.id, lang.selecttime[this.options.language], menu).then((msg_promise) => this.chats.set(msg_promise.chat.id, msg_promise.message_id))
+        },
+        deleteMessage(query) {
+            this.bot.deleteMessage(query.message.chat.id,query.message.message_id)
+        }
+    };
+    Telegraf = {
+        editMessageReplyMarkupCalendar(date, query) {
+            this.bot.telegram.editMessageReplyMarkup(query.message.chat.id, query.message.message_id, null, this.createNavigationKeyboard(date))
+        },
+        editMessageReplyMarkupTime(date, query, from_calendar) {
+            this.bot.telegram.editMessageReplyMarkup(query.message.chat.id, query.message.message_id, null, this.createTimeSelector(date, from_calendar))
+        },
+        sendMessageCalendar(menu, msg) {
+            var l = (this.options.time_selector_mod === true) ? lang.selectdatetime[this.options.language] : lang.select[this.options.language];
+            this.bot.telegram.sendMessage(msg.chat.id, l, menu).then((msg_promise) => this.chats.set(msg_promise.chat.id, msg_promise.message_id));
+        },
+        sendMessageTime(menu, msg) {
+            this.bot.telegram.sendMessage(msg.chat.id, lang.selecttime[this.options.language], menu).then((msg_promise) => this.chats.set(msg_promise.chat.id, msg_promise.message_id))
+        },
+        deleteMessage(query) {
+            this.bot.telegram.deleteMessage(query.message.chat.id,query.message.message_id)
+        }
+    };
+    Telebot = {
+        editMessageReplyMarkupCalendar(date, query) {
+            var menu = {replyMarkup: this.createNavigationKeyboard(date)};
+            this.bot.editMessageReplyMarkup({messageId: query.message.message_id, chatId: query.message.chat.id}, menu);
+        },
+        editMessageReplyMarkupTime(date, query, from_calendar) {
+            var menu = {replyMarkup: this.createTimeSelector(date, from_calendar)};
+            this.bot.editMessageReplyMarkup({messageId: query.message.message_id, chatId: query.message.chat.id}, menu);
+        },
+        sendMessageCalendar(menu, msg) {
+            var l = (this.options.time_selector_mod === true) ? lang.selectdatetime[this.options.language] : lang.select[this.options.language];
+            this.bot.sendMessage(msg.chat.id, l, menu).then((msg_promise) => this.chats.set(msg_promise.chat.id, msg_promise.message_id));
+        },
+        sendMessageTime(menu, msg) {
+            this.bot.sendMessage(msg.chat.id, lang.selecttime[this.options.language], menu).then((msg_promise) => this.chats.set(msg_promise.chat.id, msg_promise.message_id))
+        },
+        deleteMessage(query) {
+            this.bot.deleteMessage(query.message.chat.id,query.message.message_id)
+        }
+    };
+    libraryInitialization() {
+        if (this.options.bot_api == 'node-telegram-bot-api') {
+            this.editMessageReplyMarkupCalendar = this.NodeTelegramBotApi.editMessageReplyMarkupCalendar;
+            this.editMessageReplyMarkupTime = this.NodeTelegramBotApi.editMessageReplyMarkupTime;
+            this.sendMessageCalendar = this.NodeTelegramBotApi.sendMessageCalendar;
+            this.sendMessageTime = this.NodeTelegramBotApi.sendMessageTime;
+            this.deleteMessage = this.NodeTelegramBotApi.deleteMessage;
+        } else if (this.options.bot_api == 'telegraf') {
+            this.editMessageReplyMarkupCalendar = this.Telegraf.editMessageReplyMarkupCalendar;
+            this.editMessageReplyMarkupTime = this.Telegraf.editMessageReplyMarkupTime;
+            this.sendMessageCalendar = this.Telegraf.sendMessageCalendar;
+            this.sendMessageTime = this.Telegraf.sendMessageTime;
+            this.deleteMessage = this.Telegraf.deleteMessage;
+        } else if (this.options.bot_api == 'telebot') {
+            this.editMessageReplyMarkupCalendar = this.Telebot.editMessageReplyMarkupCalendar;
+            this.editMessageReplyMarkupTime = this.Telebot.editMessageReplyMarkupTime;
+            this.sendMessageCalendar = this.Telebot.sendMessageCalendar;
+            this.sendMessageTime = this.Telebot.sendMessageTime;
+            this.deleteMessage = this.Telebot.deleteMessage;
+        }
     }
     weekDaysButtons(day) {
         return (day + this.options.start_week_day > 6) ? (day + this.options.start_week_day - 7) : (day + this.options.start_week_day);
@@ -34,51 +112,6 @@ module.exports = class Calendar {
         var date1 = new Date(year, month-1, 1);
         var date2 = new Date(year, month, 1);
         return Math.round((date2 - date1) / 1000 / 3600 / 24); 
-    }
-    editMessageReplyMarkupCalendar(date, query) {
-        if (this.options.bot_api == 'node-telegram-bot-api')
-            this.bot.editMessageReplyMarkup(this.createNavigationKeyboard(date),{message_id: query.message.message_id, chat_id: query.message.chat.id});
-        else if (this.options.bot_api == 'telegraf')
-            this.bot.telegram.editMessageReplyMarkup(query.message.chat.id, query.message.message_id, null, this.createNavigationKeyboard(date));
-        else if (this.options.bot_api == 'telebot') {
-            var menu = {replyMarkup: this.createNavigationKeyboard(date)};
-            this.bot.editMessageReplyMarkup({messageId: query.message.message_id, chatId: query.message.chat.id}, menu);
-        }
-    }
-    editMessageReplyMarkupTime(date, query, from_calendar) {
-        if (this.options.bot_api == 'node-telegram-bot-api')
-            this.bot.editMessageReplyMarkup(this.createTimeSelector(date, from_calendar),{message_id: query.message.message_id, chat_id: query.message.chat.id});
-        else if (this.options.bot_api == 'telegraf')
-            this.bot.telegram.editMessageReplyMarkup(query.message.chat.id, query.message.message_id, null, this.createTimeSelector(date, from_calendar));
-        else if (this.options.bot_api == 'telebot') {
-            var menu = {replyMarkup: this.createTimeSelector(date, from_calendar)};
-            this.bot.editMessageReplyMarkup({messageId: query.message.message_id, chatId: query.message.chat.id}, menu);
-        }
-    }
-    sendMessageCalendar(menu, msg) {
-        var l = (this.options.time_selector_mod === true) ? lang.selectdatetime[this.options.language] : lang.select[this.options.language];
-        if (this.options.bot_api == 'node-telegram-bot-api')
-            this.bot.sendMessage(msg.chat.id, l, menu).then((msg_promise) => this.chats.set(msg_promise.chat.id, msg_promise.message_id));
-        else if (this.options.bot_api == 'telegraf')
-            this.bot.telegram.sendMessage(msg.chat.id, l, menu).then((msg_promise) => this.chats.set(msg_promise.chat.id, msg_promise.message_id));
-        else if (this.options.bot_api == 'telebot')
-            this.bot.sendMessage(msg.chat.id, l, menu).then((msg_promise) => this.chats.set(msg_promise.chat.id, msg_promise.message_id));
-    }
-    sendMessageTime(menu, msg) {
-        if (this.options.bot_api == 'node-telegram-bot-api')
-            this.bot.sendMessage(msg.chat.id, lang.selecttime[this.options.language], menu).then((msg_promise) => this.chats.set(msg_promise.chat.id, msg_promise.message_id));
-        else if (this.options.bot_api == 'telegraf')
-            this.bot.telegram.sendMessage(msg.chat.id, lang.selecttime[this.options.language], menu).then((msg_promise) => this.chats.set(msg_promise.chat.id, msg_promise.message_id));
-        else if (this.options.bot_api == 'telebot')
-            this.bot.sendMessage(msg.chat.id, lang.selecttime[this.options.language], menu).then((msg_promise) => this.chats.set(msg_promise.chat.id, msg_promise.message_id));
-    }
-    deleteMessage(query) {
-        if (this.options.bot_api === 'node-telegram-bot-api')
-            this.bot.deleteMessage(query.message.chat.id,query.message.message_id)
-        else if (this.options.bot_api === 'telegraf')
-            this.bot.telegram.deleteMessage(query.message.chat.id,query.message.message_id)
-        else if (this.options.bot_api === 'telebot')
-            this.bot.deleteMessage(query.message.chat.id,query.message.message_id)
     }
     createTimeSelector(date = 'undefined', from_calendar = false) {
         var i, j;
