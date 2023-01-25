@@ -3,16 +3,19 @@
     * [node-telegram-bot-api](#ntba1)
     * [telegraf](#telegraf1)
     * [telebot](#telebot1)
+    * [grammy](#grammy1)
     * [Result](#res1)
 2. [Example 2. Calendar + Time Selector](#ex2)
     * [node-telegram-bot-api](#ntba2)
     * [telegraf](#telegraf2)
     * [telebot](#telebot2)
+    * [grammy](#grammy2)
     * [Result](#res2)
 3. [Example 3. Time Selector](#ex3)
     * [node-telegram-bot-api](#ntba3)
     * [telegraf](#telegraf3)
     * [telebot](#telebot3)
+    * [grammy](#grammy3)
     * [Result](#res3)
 
 ## <a name="ex1"> Example 1. Calendar
@@ -56,7 +59,7 @@ const calendar = new NavCalendar(bot, {
     bot_api: 'telegraf'
 });
 
-bot.start((ctx) => calendar.startNavCalendar(ctx));
+bot.start((ctx) => calendar.startNavCalendar(ctx.message));
 
 bot.on("callback_query", (ctx) => {
     if (ctx.callbackQuery.message.message_id == calendar.chats.get(ctx.callbackQuery.message.chat.id)) {
@@ -98,6 +101,32 @@ bot.on("callbackQuery", (query) => {
 bot.connect();
 ```
 
+### <a name="grammy1"> grammy
+```js
+const TOKEN = process.env.TELEGRAM_TOKEN || 'YOUR_TELEGRAM_BOT_TOKEN';
+
+const { Bot } = require('grammy');
+const NavCalendar = require('telegram-inline-calendar')
+const bot = new Bot(TOKEN);
+const calendar = new NavCalendar(bot, {
+    date_format: 'DD-MM-YYYY',
+    language: 'en',
+    bot_api: 'grammy'
+});
+
+bot.command('start', ctx => calendar.startNavCalendar(ctx.message))
+
+bot.on("callback_query:data", (ctx) => {
+    if (ctx.update.callback_query.message.message_id == calendar.chats.get(ctx.update.callback_query.message.chat.id)) {
+        res = calendar.clickButtonCalendar(ctx.update.callback_query);
+        if (res !== -1) {
+            bot.api.sendMessage(ctx.update.callback_query.message.chat.id, "You selected: " + res);
+        }
+    }
+});
+bot.start();
+```
+
 ### <a name="res1"> Result:
 <img src="https://github.com/VDS13/telegram-inline-calendar/blob/main/img/demo.gif" width="400"/>
 
@@ -132,7 +161,6 @@ bot.on("callback_query", (query) => {
 
 ### <a name="telegraf2"> telegraf
 ```js
-
 const TOKEN = process.env.TELEGRAM_TOKEN || 'YOUR_TELEGRAM_BOT_TOKEN';
 
 const {Telegraf} = require('telegraf');
@@ -148,7 +176,7 @@ const calendar = new NavCalendar(bot, {
     time_step: "15m"
 });
 
-bot.start((ctx) => calendar.startNavCalendar(ctx));
+bot.start((ctx) => calendar.startNavCalendar(ctx.message));
 
 bot.on("callback_query", (ctx) => {
     if (ctx.callbackQuery.message.message_id == calendar.chats.get(ctx.callbackQuery.message.chat.id)) {
@@ -194,6 +222,37 @@ bot.on("callbackQuery", (query) => {
 bot.connect();
 ```
 
+### <a name="grammy2"> grammy
+```js
+const TOKEN = process.env.TELEGRAM_TOKEN || 'YOUR_TELEGRAM_BOT_TOKEN';
+
+const {Bot} = require('grammy');
+const NavCalendar = require('telegram-inline-calendar')
+const bot = new Bot(TOKEN);
+const calendar = new NavCalendar(bot, {
+    date_format: 'MMM D, YYYY h:mm A',
+    language: 'de',
+    start_week_day: 1,
+    bot_api: "grammy",
+    time_selector_mod: true,
+    time_range: "08:00-15:59",
+    time_step: "15m"
+});
+
+
+bot.command('start', ctx => calendar.startNavCalendar(ctx.message));
+
+bot.on("callback_query:data", (ctx) => {
+    if (ctx.update.callback_query.message.message_id == calendar.chats.get(ctx.update.callback_query.message.chat.id)) {
+        res = calendar.clickButtonCalendar(ctx.update.callback_query);
+        if (res !== -1) {
+            bot.api.sendMessage(ctx.update.callback_query.message.chat.id, "You selected: " + res);
+        }
+    }
+});
+bot.start();
+```
+
 ### <a name="res2"> Result:
 <img src="https://github.com/VDS13/telegram-inline-calendar/blob/main/img/demo2.gif" width="400"/>
 
@@ -236,11 +295,12 @@ const bot = new Telegraf(TOKEN);
 const calendar = new NavCalendar(bot, {
     date_format: 'HH:mm',
     language: 'fr',
+    bot_api: "telegraf",
     time_range: "05:00-08:59",
     time_step: "10m"
 });
 
-bot.start((ctx) => calendar.startTimeSelector(ctx));
+bot.start((ctx) => calendar.startTimeSelector(ctx.message));
 
 bot.on("callback_query", (ctx) => {
     if (ctx.callbackQuery.message.message_id == calendar.chats.get(ctx.callbackQuery.message.chat.id)) {
@@ -265,6 +325,7 @@ const bot = new Telebot(TOKEN);
 const calendar = new NavCalendar(bot, {
     date_format: 'HH:mm',
     language: 'fr',
+    bot_api: "telebot",
     time_range: "05:00-08:59",
     time_step: "10m"
 });
@@ -281,6 +342,34 @@ bot.on("callbackQuery", (query) => {
     }
 });
 bot.connect();
+```
+
+### <a name="grammy3"> grammy
+```js
+const TOKEN = process.env.TELEGRAM_TOKEN || 'YOUR_TELEGRAM_BOT_TOKEN';
+
+const {Bot} = require('grammy');
+const NavCalendar = require('telegram-inline-calendar')
+const bot = new Bot(TOKEN);
+const calendar = new NavCalendar(bot, {
+    date_format: 'HH:mm',
+    language: 'fr',
+    bot_api: "grammy",
+    time_range: "05:00-08:59",
+    time_step: "10m"
+});
+
+bot.command('start', ctx => calendar.startTimeSelector(ctx.message));
+
+bot.on("callback_query:data", (ctx) => {
+    if (ctx.update.callback_query.message.message_id == calendar.chats.get(ctx.update.callback_query.message.chat.id)) {
+        res = calendar.clickButtonCalendar(ctx.update.callback_query);
+        if (res !== -1) {
+            bot.api.sendMessage(ctx.update.callback_query.message.chat.id, "You selected: " + res);
+        }
+    }
+});
+bot.start();
 ```
 
 ### <a name="res3"> Result:

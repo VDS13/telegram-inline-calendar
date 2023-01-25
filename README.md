@@ -7,8 +7,7 @@ Date and time picker and Inline calendar for Node.js telegram bots.
 
 [![Bot API](https://img.shields.io/badge/Bot%20API-v.6.3-00aced.svg?style=flat-square&logo=telegram)](https://core.telegram.org/bots/api)
 [![npm package](https://img.shields.io/npm/v/telegram-inline-calendar?logo=npm&style=flat-square)](https://www.npmjs.org/package/telegram-inline-calendar)
-[![npm download](https://img.shields.io/npm/dm/telegram-inline-calendar)](https://www.npmjs.org/package/telegram-inline-calendar)
-[![https://t.me/vds_13](https://img.shields.io/badge/💬%20Telegram-VDS13-blue.svg?style=flat-square)](https://t.me/vds_13)
+[![npm download](https://img.shields.io/npm/dt/telegram-inline-calendar)](https://www.npmjs.org/package/telegram-inline-calendar)
 
 </div>
 
@@ -30,6 +29,7 @@ Supported Telegram bot libraries:
 * [Telegraf](https://github.com/telegraf/telegraf)
 * [node-telegram-bot-api](https://github.com/yagop/node-telegram-bot-api)
 * [telebot](https://github.com/mullwar/telebot)
+* [grammy](https://github.com/grammyjs/grammY)
 
 ## 📦 Install
 
@@ -84,7 +84,7 @@ const calendar = new NavCalendar(bot, {
     bot_api: 'telegraf'
 });
 
-bot.start((ctx) => calendar.startNavCalendar(ctx));
+bot.start((ctx) => calendar.startNavCalendar(ctx.message));
 
 bot.on("callback_query", (ctx) => {
     if (ctx.callbackQuery.message.message_id == calendar.chats.get(ctx.callbackQuery.message.chat.id)) {
@@ -126,6 +126,32 @@ bot.on("callbackQuery", (query) => {
 bot.connect();
 ```
 
+### grammy
+```js
+const TOKEN = process.env.TELEGRAM_TOKEN || 'YOUR_TELEGRAM_BOT_TOKEN';
+
+const { Bot } = require('grammy');
+const NavCalendar = require('telegram-inline-calendar')
+const bot = new Bot(TOKEN);
+const calendar = new NavCalendar(bot, {
+    date_format: 'DD-MM-YYYY',
+    language: 'en',
+    bot_api: 'grammy'
+});
+
+bot.command('start', ctx => calendar.startNavCalendar(ctx.message))
+
+bot.on("callback_query:data", (ctx) => {
+    if (ctx.update.callback_query.message.message_id == calendar.chats.get(ctx.update.callback_query.message.chat.id)) {
+        res = calendar.clickButtonCalendar(ctx.update.callback_query);
+        if (res !== -1) {
+            bot.api.sendMessage(ctx.update.callback_query.message.chat.id, "You selected: " + res);
+        }
+    }
+});
+bot.start();
+```
+
 ## ⚙️ Default options
 
 ```javascript
@@ -137,7 +163,7 @@ bot.connect();
     start_week_day: 0,                             //First day of the week(Sunday - `0`, Monday - `1`, Tuesday - `2` and so on)
     time_selector_mod: false,                      //Enable time selection after a date is selected.
     time_range: "00:00-23:59",                     //Allowed time range in "HH:mm-HH:mm" format
-    time_step: "30m"                               //Time step in the format "\<Time step\>\<m \| h\>"
+    time_step: "30m"                               //Time step in the format "<Time step><m | h>"
 }
 ```
 

@@ -32,6 +32,11 @@ module.exports = class Calendar {
         },
         deleteMessage(query) {
             this.bot.deleteMessage(query.message.chat.id,query.message.message_id)
+        },
+        replyMarkupObject(cnk) {
+            var menu = {};
+            menu.reply_markup = cnk;
+            return menu;
         }
     };
     Telegraf = {
@@ -50,16 +55,19 @@ module.exports = class Calendar {
         },
         deleteMessage(query) {
             this.bot.telegram.deleteMessage(query.message.chat.id,query.message.message_id)
+        },
+        replyMarkupObject(cnk) {
+            var menu = {};
+            menu.reply_markup = cnk;
+            return menu;
         }
     };
     Telebot = {
         editMessageReplyMarkupCalendar(date, query) {
-            var menu = {replyMarkup: this.createNavigationKeyboard(date)};
-            this.bot.editMessageReplyMarkup({messageId: query.message.message_id, chatId: query.message.chat.id}, menu);
+            this.bot.editMessageReplyMarkup({messageId: query.message.message_id, chatId: query.message.chat.id}, this.replyMarkupObject(this.createNavigationKeyboard(date)));
         },
         editMessageReplyMarkupTime(date, query, from_calendar) {
-            var menu = {replyMarkup: this.createTimeSelector(date, from_calendar)};
-            this.bot.editMessageReplyMarkup({messageId: query.message.message_id, chatId: query.message.chat.id}, menu);
+            this.bot.editMessageReplyMarkup({messageId: query.message.message_id, chatId: query.message.chat.id}, this.replyMarkupObject(this.createTimeSelector(date, from_calendar)));
         },
         sendMessageCalendar(menu, msg) {
             var l = (this.options.time_selector_mod === true) ? lang.selectdatetime[this.options.language] : lang.select[this.options.language];
@@ -70,6 +78,35 @@ module.exports = class Calendar {
         },
         deleteMessage(query) {
             this.bot.deleteMessage(query.message.chat.id,query.message.message_id)
+        },
+        replyMarkupObject(cnk) {
+            var menu = {};
+            menu.replyMarkup = cnk;
+            return menu;
+        }
+
+    };
+    Grammy = {
+        editMessageReplyMarkupCalendar(date, query) {
+            this.bot.api.editMessageReplyMarkup(query.message.chat.id, query.message.message_id, this.replyMarkupObject(this.createNavigationKeyboard(date)));
+        },
+        editMessageReplyMarkupTime(date, query, from_calendar) {
+            this.bot.api.editMessageReplyMarkup(query.message.chat.id, query.message.message_id, this.replyMarkupObject(this.createTimeSelector(date, from_calendar)));
+        },
+        sendMessageCalendar(menu, msg) {
+            var l = (this.options.time_selector_mod === true) ? lang.selectdatetime[this.options.language] : lang.select[this.options.language];
+            this.bot.api.sendMessage(msg.chat.id, l, menu).then((msg_promise) => this.chats.set(msg_promise.chat.id, msg_promise.message_id));
+        },
+        sendMessageTime(menu, msg) {
+            this.bot.api.sendMessage(msg.chat.id, lang.selecttime[this.options.language], menu).then((msg_promise) => this.chats.set(msg_promise.chat.id, msg_promise.message_id))
+        },
+        deleteMessage(query) {
+            this.bot.api.deleteMessage(query.message.chat.id,query.message.message_id)
+        },
+        replyMarkupObject(cnk) {
+            var menu = {};
+            menu.reply_markup = cnk;
+            return menu;
         }
     };
     libraryInitialization() {
@@ -79,18 +116,28 @@ module.exports = class Calendar {
             this.sendMessageCalendar = this.NodeTelegramBotApi.sendMessageCalendar;
             this.sendMessageTime = this.NodeTelegramBotApi.sendMessageTime;
             this.deleteMessage = this.NodeTelegramBotApi.deleteMessage;
+            this.replyMarkupObject = this.NodeTelegramBotApi.replyMarkupObject;
         } else if (this.options.bot_api == 'telegraf') {
             this.editMessageReplyMarkupCalendar = this.Telegraf.editMessageReplyMarkupCalendar;
             this.editMessageReplyMarkupTime = this.Telegraf.editMessageReplyMarkupTime;
             this.sendMessageCalendar = this.Telegraf.sendMessageCalendar;
             this.sendMessageTime = this.Telegraf.sendMessageTime;
             this.deleteMessage = this.Telegraf.deleteMessage;
+            this.replyMarkupObject = this.Telegraf.replyMarkupObject;
         } else if (this.options.bot_api == 'telebot') {
             this.editMessageReplyMarkupCalendar = this.Telebot.editMessageReplyMarkupCalendar;
             this.editMessageReplyMarkupTime = this.Telebot.editMessageReplyMarkupTime;
             this.sendMessageCalendar = this.Telebot.sendMessageCalendar;
             this.sendMessageTime = this.Telebot.sendMessageTime;
             this.deleteMessage = this.Telebot.deleteMessage;
+            this.replyMarkupObject = this.Telebot.replyMarkupObject;
+        } else if (this.options.bot_api == 'grammy') {
+            this.editMessageReplyMarkupCalendar = this.Grammy.editMessageReplyMarkupCalendar;
+            this.editMessageReplyMarkupTime = this.Grammy.editMessageReplyMarkupTime;
+            this.sendMessageCalendar = this.Grammy.sendMessageCalendar;
+            this.sendMessageTime = this.Grammy.sendMessageTime;
+            this.deleteMessage = this.Grammy.deleteMessage;
+            this.replyMarkupObject = this.Grammy.replyMarkupObject;
         }
     }
     weekDaysButtons(day) {
@@ -203,20 +250,10 @@ module.exports = class Calendar {
         now.setHours(0);
         now.setMinutes(0);
         now.setSeconds(0);
-        var menu = {};
-        if (this.options.bot_api === 'telebot')
-            menu.replyMarkup = this.createNavigationKeyboard(now);
-        else
-            menu.reply_markup = this.createNavigationKeyboard(now);
-        this.sendMessageCalendar(menu, msg);
+        this.sendMessageCalendar(this.replyMarkupObject(this.createNavigationKeyboard(now)), msg);
     }
     startTimeSelector(msg) {
-        var menu = {};
-        if (this.options.bot_api === 'telebot')
-            menu.replyMarkup = this.createTimeSelector();
-        else
-            menu.reply_markup = this.createTimeSelector();
-        this.sendMessageTime(menu, msg);
+        this.sendMessageTime(this.replyMarkupObject(this.createTimeSelector()), msg);
     }
     clickButtonCalendar(query) {
         if (query.data == ' ') {
