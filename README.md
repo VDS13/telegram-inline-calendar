@@ -139,13 +139,13 @@ const calendar = new NavCalendar(bot, {
     bot_api: 'grammy'
 });
 
-bot.command('start', ctx => calendar.startNavCalendar(ctx.message))
+bot.command('start', ctx => calendar.startNavCalendar(ctx.msg))
 
-bot.on("callback_query:data", (ctx) => {
-    if (ctx.update.callback_query.message.message_id == calendar.chats.get(ctx.update.callback_query.message.chat.id)) {
-        res = calendar.clickButtonCalendar(ctx.update.callback_query);
+bot.on("callback_query:data", async (ctx) => {
+    if (ctx.msg.message_id === calendar.chats.get(ctx.chat.id)) {
+        res = calendar.clickButtonCalendar(ctx.callbackQuery);
         if (res !== -1) {
-            bot.api.sendMessage(ctx.update.callback_query.message.chat.id, "You selected: " + res);
+            await ctx.reply("You selected: " + res);
         }
     }
 });
