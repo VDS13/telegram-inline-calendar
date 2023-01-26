@@ -3,19 +3,19 @@
     * [node-telegram-bot-api](#ntba1)
     * [telegraf](#telegraf1)
     * [telebot](#telebot1)
-    * [grammy](#grammy1)
+    * [grammY](#grammy1)
     * [Result](#res1)
 2. [Example 2. Calendar + Time Selector](#ex2)
     * [node-telegram-bot-api](#ntba2)
     * [telegraf](#telegraf2)
     * [telebot](#telebot2)
-    * [grammy](#grammy2)
+    * [grammY](#grammy2)
     * [Result](#res2)
 3. [Example 3. Time Selector](#ex3)
     * [node-telegram-bot-api](#ntba3)
     * [telegraf](#telegraf3)
     * [telebot](#telebot3)
-    * [grammy](#grammy3)
+    * [grammY](#grammy3)
     * [Result](#res3)
 
 ## <a name="ex1"> Example 1. Calendar
@@ -101,7 +101,7 @@ bot.on("callbackQuery", (query) => {
 bot.connect();
 ```
 
-### <a name="grammy1"> grammy
+### <a name="grammy1"> grammY
 ```js
 const TOKEN = process.env.TELEGRAM_TOKEN || 'YOUR_TELEGRAM_BOT_TOKEN';
 
@@ -114,17 +114,16 @@ const calendar = new NavCalendar(bot, {
     bot_api: 'grammy'
 });
 
-bot.command('start', ctx => calendar.startNavCalendar(ctx.message))
+bot.command('start', ctx => calendar.startNavCalendar(ctx.msg))
 
 bot.on("callback_query:data", (ctx) => {
-    if (ctx.update.callback_query.message.message_id == calendar.chats.get(ctx.update.callback_query.message.chat.id)) {
-        res = calendar.clickButtonCalendar(ctx.update.callback_query);
+    if (ctx.msg.message_id == calendar.chats.get(ctx.chat.id)) {
+        res = calendar.clickButtonCalendar(ctx.callbackQuery);
         if (res !== -1) {
-            bot.api.sendMessage(ctx.update.callback_query.message.chat.id, "You selected: " + res);
+            await ctx.reply("You selected: " + res);
         }
     }
 });
-bot.start();
 ```
 
 ### <a name="res1"> Result:
@@ -222,7 +221,7 @@ bot.on("callbackQuery", (query) => {
 bot.connect();
 ```
 
-### <a name="grammy2"> grammy
+### <a name="grammy2"> grammY
 ```js
 const TOKEN = process.env.TELEGRAM_TOKEN || 'YOUR_TELEGRAM_BOT_TOKEN';
 
@@ -240,13 +239,13 @@ const calendar = new NavCalendar(bot, {
 });
 
 
-bot.command('start', ctx => calendar.startNavCalendar(ctx.message));
+bot.command('start', ctx => calendar.startNavCalendar(ctx.msg));
 
 bot.on("callback_query:data", (ctx) => {
-    if (ctx.update.callback_query.message.message_id == calendar.chats.get(ctx.update.callback_query.message.chat.id)) {
-        res = calendar.clickButtonCalendar(ctx.update.callback_query);
+    if (ctx.msg.message_id == calendar.chats.get(ctx.chat.id)) {
+        res = calendar.clickButtonCalendar(ctx.callbackQuery);
         if (res !== -1) {
-            bot.api.sendMessage(ctx.update.callback_query.message.chat.id, "You selected: " + res);
+            await ctx.reply("You selected: " + res);
         }
     }
 });
@@ -344,7 +343,7 @@ bot.on("callbackQuery", (query) => {
 bot.connect();
 ```
 
-### <a name="grammy3"> grammy
+### <a name="grammy3"> grammY
 ```js
 const TOKEN = process.env.TELEGRAM_TOKEN || 'YOUR_TELEGRAM_BOT_TOKEN';
 
@@ -359,13 +358,13 @@ const calendar = new NavCalendar(bot, {
     time_step: "10m"
 });
 
-bot.command('start', ctx => calendar.startTimeSelector(ctx.message));
+bot.command('start', ctx => calendar.startTimeSelector(ctx.msg));
 
 bot.on("callback_query:data", (ctx) => {
-    if (ctx.update.callback_query.message.message_id == calendar.chats.get(ctx.update.callback_query.message.chat.id)) {
-        res = calendar.clickButtonCalendar(ctx.update.callback_query);
+    if (ctx.msg.message_id == calendar.chats.get(ctx.chat.id)) {
+        res = calendar.clickButtonCalendar(ctx.callbackQuery);
         if (res !== -1) {
-            bot.api.sendMessage(ctx.update.callback_query.message.chat.id, "You selected: " + res);
+            await ctx.reply("You selected: " + res);
         }
     }
 });

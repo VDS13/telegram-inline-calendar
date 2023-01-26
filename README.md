@@ -29,7 +29,7 @@ Supported Telegram bot libraries:
 * [Telegraf](https://github.com/telegraf/telegraf)
 * [node-telegram-bot-api](https://github.com/yagop/node-telegram-bot-api)
 * [telebot](https://github.com/mullwar/telebot)
-* [grammy](https://github.com/grammyjs/grammY)
+* [grammY](https://github.com/grammyjs/grammY)
 
 ## 📦 Install
 
@@ -126,7 +126,7 @@ bot.on("callbackQuery", (query) => {
 bot.connect();
 ```
 
-### grammy
+### grammY
 ```js
 const TOKEN = process.env.TELEGRAM_TOKEN || 'YOUR_TELEGRAM_BOT_TOKEN';
 
