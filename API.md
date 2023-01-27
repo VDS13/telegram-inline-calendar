@@ -18,7 +18,7 @@ Calendar
 ### new Calendar(bot, [options])
 | Param | Type | Default | Description |
 | --- | --- | --- | --- |
-| bot | <code>TelegramBot</code> |  | TelegramBot class instance (Telegraf/Telebot/node-telegram-bot-api) |
+| bot | <code>TelegramBot</code> |  | TelegramBot class instance (telegraf/telebot/node-telegram-bot-api/grammy) |
 | [options] | <code>Object</code> |  |  |
 | [options.language] | <code>String</code> | <code>"en"</code> | Calendar language. |
 | [options.date_format] | <code>String</code> | <code>"YYYY-MM-DD"</code> | Date output format. |
