@@ -2,7 +2,7 @@
 
 <div align="center">
 
-Date and time picker and Inline calendar for Node.js telegram bots.
+Date and time picker and inline calendar for Node.js telegram bots.
 
 
 [![Bot API](https://img.shields.io/badge/Bot%20API-v.6.3-00aced.svg?style=flat-square&logo=telegram)](https://core.telegram.org/bots/api)
