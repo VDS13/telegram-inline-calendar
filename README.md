@@ -163,7 +163,7 @@ bot.start();
     start_week_day: 0,                             //First day of the week(Sunday - `0`, Monday - `1`, Tuesday - `2` and so on)
     time_selector_mod: false,                      //Enable time selection after a date is selected.
     time_range: "00:00-23:59",                     //Allowed time range in "HH:mm-HH:mm" format
-    time_step: "30m"                               //Time step in the format "<Time step><m | h>"
+    time_step: "30m",                              //Time step in the format "<Time step><m | h>"
     start_date: false,                             //Minimum date of the calendar in the format "YYYY-MM-DD"
     stop_date: false                               //Maximum date of the calendar in the format "YYYY-MM-DD"
 }
