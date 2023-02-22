@@ -18,7 +18,7 @@ Calendar
 ### new Calendar(bot, [options])
 | Param | Type | Default | Description |
 | --- | --- | --- | --- |
-| bot | <code>TelegramBot</code> |  | TelegramBot class instance (telegraf/telebot/node-telegram-bot-api/grammy) |
+| bot | <code>TelegramBot</code> |  | TelegramBot class instance (Telegraf/Telebot/node-telegram-bot-api//grammY) |
 | [options] | <code>Object</code> |  |  |
 | [options.language] | <code>String</code> | <code>"en"</code> | Calendar language. |
 | [options.date_format] | <code>String</code> | <code>"YYYY-MM-DD"</code> | Date output format. |
@@ -28,6 +28,8 @@ Calendar
 | [options.time_selector_mod] | <code>Boolean</code> | <code>false</code> | Enable time selection after a date is selected. |
 | [options.time_range] | <code>String</code> | <code>"00:00-23:59"</code> | Allowed time range in "HH:mm-HH:mm" format. |
 | [options.time_step] | <code>String</code> | <code>"30m"</code> | Time step in the format "\<Time step\>\<m \| h\>", where "m" - minutes, "h" - hours. (For example: <code>"30m"</code>, <code>"1h"</code>, <code>"150m"</code>). |
+| [options.start_date] | <code>Boolean|String</code> | <code>false</code> | Minimum date of the calendar in the format "YYYY-MM-DD". |
+| [options.stop_date] | <code>Boolean|String</code> | <code>false</code> | Maximum date of the calendar in the format "YYYY-MM-DD". |
 
 <a name="Calendar+startNavCalendar"></a>
 

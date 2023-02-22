@@ -12,6 +12,8 @@ module.exports = class Calendar {
         this.options.time_selector_mod = (typeof options.time_selector_mod === 'undefined') ? false : options.time_selector_mod;
         this.options.time_range = (typeof options.time_range === 'undefined') ? "00:00-23:59" : options.time_range;
         this.options.time_step = (typeof options.time_step === 'undefined') ? "30m" : options.time_step;
+        this.options.start_date = (typeof options.start_date === 'undefined') ? false : options.start_date;
+        this.options.stop_date = (typeof options.stop_date === 'undefined') ? false : options.stop_date;
         this.bot = bot;
         this.chats = new Map();
         this.libraryInitialization();
@@ -219,9 +221,25 @@ module.exports = class Calendar {
         cnk.resize_keyboard = true;
         cnk.inline_keyboard = [];
         cnk.inline_keyboard.push([{},{},{}]);
-        cnk.inline_keyboard[0][0] = {text: '<<', callback_data: 'n_' + dayjs(date).format("YYYY-MM") + '_--'};
+        if (!this.options.start_date || (this.options.start_date && dayjs(date).format('YYYY') > dayjs(this.options.start_date).format('YYYY'))) {
+            if (dayjs(date).subtract(1, 'year').format('YYYY') == dayjs(this.options.start_date).format('YYYY')) {
+                cnk.inline_keyboard[0][0] = {text: '<<', callback_data: 'n_' + dayjs(this.options.start_date).add(1, 'year').format("YYYY-MM") + '_--'};
+            } else {
+                cnk.inline_keyboard[0][0] = {text: '<<', callback_data: 'n_' + dayjs(date).format("YYYY-MM") + '_--'};
+            }
+        } else {
+            cnk.inline_keyboard[0][0] = {text: ' ', callback_data: ' '};
+        }
         cnk.inline_keyboard[0][1] = {text: lang.month3[this.options.language][date.getMonth()] + ' ' + date.getFullYear(), callback_data: ' '};
-        cnk.inline_keyboard[0][2] = {text: '>>', callback_data: 'n_' + dayjs(date).format("YYYY-MM") + '_++'};
+        if (!this.options.stop_date || (this.options.stop_date && dayjs(this.options.stop_date).format('YYYY') > dayjs(date).format('YYYY'))) {
+            if (dayjs(date).add(1, 'year').format('YYYY') == dayjs(this.options.stop_date).format('YYYY')) {
+                cnk.inline_keyboard[0][2] = {text: '>>', callback_data: 'n_' + dayjs(this.options.stop_date).subtract(1, 'year').format("YYYY-MM") + '_++'};
+            } else {
+                cnk.inline_keyboard[0][2] = {text: '>>', callback_data: 'n_' + dayjs(date).format("YYYY-MM") + '_++'};
+            }
+        } else {
+            cnk.inline_keyboard[0][2] = {text: ' ', callback_data: ' '};
+        }
         cnk.inline_keyboard.push([{},{},{},{},{},{},{}]);
         for(j = 0; j < 7; j++) {
             cnk.inline_keyboard[1][j] = {text: lang.week[this.options.language][this.weekDaysButtons(j)], callback_data: ' '};
@@ -233,15 +251,27 @@ module.exports = class Calendar {
                 if ((i == 2 && j < this.startWeekDay(date.getDay())) || d > cd) {
                     cnk.inline_keyboard[i][j] = {text: ' ', callback_data: ' '};
                 } else {
-                    cnk.inline_keyboard[i][j] = {text: d, callback_data: 'n_' + date.getFullYear() + '-' + this.twoDigits(date.getMonth() + 1) + '-' + this.twoDigits(d) + '_0'};
+                    if ((!this.options.start_date || (this.options.start_date && dayjs(date).date(d).hour(0).diff(dayjs(this.options.start_date).hour(0), 'day') >= 0)) && (!this.options.stop_date || (this.options.stop_date && dayjs(this.options.stop_date).hour(0).diff(dayjs(date).date(d).hour(0), 'day') >= 0))) {
+                        cnk.inline_keyboard[i][j] = {text: d, callback_data: 'n_' + date.getFullYear() + '-' + this.twoDigits(date.getMonth() + 1) + '-' + this.twoDigits(d) + '_0'};
+                    } else {
+                        cnk.inline_keyboard[i][j] = {text: ' ', callback_data: ' '};
+                    }
                     d++;
                 }
             }
         }
         cnk.inline_keyboard.push([{},{},{}]);
-        cnk.inline_keyboard[cr - 1][0] = {text: '<', callback_data: 'n_' + dayjs(date).format("YYYY-MM") + '_-'};
+        if (!this.options.start_date || (this.options.start_date && Math.round(dayjs(date).date(1).diff(dayjs(this.options.start_date).date(1), 'month', true)) > 0)) {
+            cnk.inline_keyboard[cr - 1][0] = {text: '<', callback_data: 'n_' + dayjs(date).format("YYYY-MM") + '_-'};
+        } else {
+            cnk.inline_keyboard[cr - 1][0] = {text: ' ', callback_data: ' '};
+        }
         cnk.inline_keyboard[cr - 1][1] = {text: ' ', callback_data: ' '};
-        cnk.inline_keyboard[cr - 1][2] = {text: '>', callback_data: 'n_' + dayjs(date).format("YYYY-MM") + '_+'};
+        if (!this.options.stop_date || (this.options.stop_date && Math.round(dayjs(this.options.stop_date).date(1).diff(dayjs(date).date(1), 'month', true)) > 0)) {
+            cnk.inline_keyboard[cr - 1][2] = {text: '>', callback_data: 'n_' + dayjs(date).format("YYYY-MM") + '_+'};
+        } else {
+            cnk.inline_keyboard[cr - 1][2] = {text: ' ', callback_data: ' '};
+        }
         return cnk;
     }
     startNavCalendar(msg) {

@@ -4,6 +4,32 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## [1.5.0](https://github.com/VDS13/telegram-inline-calendar/compare/1.4.0...1.5.0) - 2023-02-22
+
+### Changed:
+
+* Added options `start_date` and `stop_date` to limit the pool of dates in the calendar.
+
+Example:
+```js
+const calendar = new NavCalendar(bot, {
+    date_format: 'DD-MM-YYYY',
+    language: 'en',
+    bot_api: 'grammy',
+    start_date: '2022-11-15',
+    stop_date: '2023-04-20'
+});
+```
+<div align="left">
+<img src="https://github.com/VDS13/telegram-inline-calendar/blob/main/img/ex1.jpg" width="200"/>
+<img src="https://github.com/VDS13/telegram-inline-calendar/blob/main/img/ex2.jpg" width="200"/>
+</div>
+
+Note: 
+```js
+start_date <= new Date() <= stop_date
+```
+
 ## [1.4.0](https://github.com/VDS13/telegram-inline-calendar/compare/1.3.3...1.4.0) - 2023-01-25
 
 ### Added:
