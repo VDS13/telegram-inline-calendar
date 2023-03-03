@@ -28,9 +28,9 @@ Calendar
 | [options.time_selector_mod] | <code>Boolean</code> | <code>false</code> | Enable time selection after a date is selected. |
 | [options.time_range] | <code>String</code> | <code>"00:00-23:59"</code> | Allowed time range in "HH:mm-HH:mm" format. |
 | [options.time_step] | <code>String</code> | <code>"30m"</code> | Time step in the format "\<Time step\>\<m \| h\>", where "m" - minutes, "h" - hours. (For example: <code>"30m"</code>, <code>"1h"</code>, <code>"150m"</code>). |
-| [options.start_date] | <code>Boolean|String</code> | <code>false</code> | Minimum date of the calendar in the format "YYYY-MM-DD". |
-| [options.stop_date] | <code>Boolean|String</code> | <code>false</code> | Maximum date of the calendar in the format "YYYY-MM-DD". |
-| [options.custom_start_msg] | <code>Boolean|String</code> | <code>false</code> | Text of the message sent with the calendar/time selector. |
+| [options.start_date] | <code>Boolean\|String</code> | <code>false</code> | Minimum date of the calendar in the format "YYYY-MM-DD". |
+| [options.stop_date] | <code>Boolean\|String</code> | <code>false</code> | Maximum date of the calendar in the format "YYYY-MM-DD". |
+| [options.custom_start_msg] | <code>Boolean\|String</code> | <code>false</code> | Text of the message sent with the calendar/time selector. |
 
 <a name="Calendar+startNavCalendar"></a>
 
