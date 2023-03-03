@@ -14,8 +14,10 @@ module.exports = class Calendar {
         this.options.time_step = (typeof options.time_step === 'undefined') ? "30m" : options.time_step;
         this.options.start_date = (typeof options.start_date === 'undefined') ? false : options.start_date;
         this.options.stop_date = (typeof options.stop_date === 'undefined') ? false : options.stop_date;
+        this.options.custom_start_msg = (typeof options.custom_start_msg === 'undefined') ? false : options.custom_start_msg;
         this.bot = bot;
         this.chats = new Map();
+        this.addCustomStartMsg();
         this.libraryInitialization();
     }
     NodeTelegramBotApi = {
@@ -111,6 +113,13 @@ module.exports = class Calendar {
             return menu;
         }
     };
+    addCustomStartMsg() {
+        if (this.options.custom_start_msg !== false) {
+            lang.select[this.options.language] = this.options.custom_start_msg;
+            lang.selectdatetime[this.options.language] = this.options.custom_start_msg;
+            lang.selecttime[this.options.language] = this.options.custom_start_msg;
+        }
+    }
     libraryInitialization() {
         if (this.options.bot_api == 'node-telegram-bot-api') {
             this.editMessageReplyMarkupCalendar = this.NodeTelegramBotApi.editMessageReplyMarkupCalendar;

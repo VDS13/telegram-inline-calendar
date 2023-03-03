@@ -4,11 +4,30 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## [1.6.0](https://github.com/VDS13/telegram-inline-calendar/compare/1.5.0...1.6.0) - 2023-03-03
+
+### Added:
+
+* Option `custom_start_msg` to change the text of the message sent with the calendar/time selector.
+
+Example:
+```js
+const calendar = new NavCalendar(bot, {
+    date_format: 'DD-MM-YYYY',
+    language: 'en',
+    bot_api: 'grammy',
+    custom_start_msg: 'Сustom start message'
+});
+```
+<div align="left">
+<img src="https://github.com/VDS13/telegram-inline-calendar/blob/main/img/ex3.jpg" width="200"/>
+</div>
+
 ## [1.5.0](https://github.com/VDS13/telegram-inline-calendar/compare/1.4.0...1.5.0) - 2023-02-22
 
-### Changed:
+### Added:
 
-* Added options `start_date` and `stop_date` to limit the pool of dates in the calendar.
+* Options `start_date` and `stop_date` to limit the pool of dates in the calendar.
 
 Example:
 ```js

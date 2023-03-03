@@ -158,14 +158,15 @@ bot.start();
 {
     date_format: 'YYYY-MM-DD',                     //Datetime result format
     language: 'en',                                //Language (en/es/de/es/fr/it)
-    bot_api: 'node-telegram-bot-api',              //telegram bot library
+    bot_api: 'node-telegram-bot-api',              //Telegram bot library
     close_calendar: true,                          //Close calendar after date selection
     start_week_day: 0,                             //First day of the week(Sunday - `0`, Monday - `1`, Tuesday - `2` and so on)
     time_selector_mod: false,                      //Enable time selection after a date is selected.
     time_range: "00:00-23:59",                     //Allowed time range in "HH:mm-HH:mm" format
     time_step: "30m",                              //Time step in the format "<Time step><m | h>"
     start_date: false,                             //Minimum date of the calendar in the format "YYYY-MM-DD"
-    stop_date: false                               //Maximum date of the calendar in the format "YYYY-MM-DD"
+    stop_date: false,                              //Maximum date of the calendar in the format "YYYY-MM-DD"
+    custom_start_msg: false                        //Text of the message sent with the calendar/time selector
 }
 ```
 
