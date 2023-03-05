@@ -9,9 +9,6 @@
   "scripts": {
     "test": "echo \"Hello\""
   },
-  "publishConfig": {
-    "registry": "https://npm.pkg.github.com/"
-  },
   "author": "Dmitry Vyazin <mit_vjazin@mail.ru>",
   "license": "MIT",
   "engines": {
