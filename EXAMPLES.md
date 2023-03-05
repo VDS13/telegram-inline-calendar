@@ -24,10 +24,10 @@
 const TOKEN = process.env.TELEGRAM_TOKEN || 'YOUR_TELEGRAM_BOT_TOKEN';
 
 const TelegramBot = require('node-telegram-bot-api');
-const NavCalendar = require('telegram-inline-calendar')
+const Calendar = require('telegram-inline-calendar')
 process.env.NTBA_FIX_319 = 1;
 const bot = new TelegramBot(TOKEN, {polling: true});
-const calendar = new NavCalendar(bot, {
+const calendar = new Calendar(bot, {
     date_format: 'DD-MM-YYYY',
     language: 'en'
 });
@@ -51,9 +51,9 @@ bot.on("callback_query", (query) => {
 const TOKEN = process.env.TELEGRAM_TOKEN || 'YOUR_TELEGRAM_BOT_TOKEN';
 
 const {Telegraf} = require('telegraf');
-const NavCalendar = require('telegram-inline-calendar')
+const Calendar = require('telegram-inline-calendar')
 const bot = new Telegraf(TOKEN);
-const calendar = new NavCalendar(bot, {
+const calendar = new Calendar(bot, {
     date_format: 'DD-MM-YYYY',
     language: 'en',
     bot_api: 'telegraf'
@@ -79,9 +79,9 @@ process.once('SIGTERM', () => bot.stop('SIGTERM'));
 const TOKEN = process.env.TELEGRAM_TOKEN || 'YOUR_TELEGRAM_BOT_TOKEN';
 
 const Telebot = require('telebot');
-const NavCalendar = require('telegram-inline-calendar')
+const Calendar = require('telegram-inline-calendar')
 const bot = new Telebot(TOKEN);
-const calendar = new NavCalendar(bot, {
+const calendar = new Calendar(bot, {
     date_format: 'DD-MM-YYYY',
     language: 'en',
     bot_api: 'telebot'
@@ -106,9 +106,9 @@ bot.connect();
 const TOKEN = process.env.TELEGRAM_TOKEN || 'YOUR_TELEGRAM_BOT_TOKEN';
 
 const { Bot } = require('grammy');
-const NavCalendar = require('telegram-inline-calendar')
+const Calendar = require('telegram-inline-calendar')
 const bot = new Bot(TOKEN);
-const calendar = new NavCalendar(bot, {
+const calendar = new Calendar(bot, {
     date_format: 'DD-MM-YYYY',
     language: 'en',
     bot_api: 'grammy'
@@ -135,10 +135,10 @@ bot.on("callback_query:data", (ctx) => {
 const TOKEN = process.env.TELEGRAM_TOKEN || 'YOUR_TELEGRAM_BOT_TOKEN';
 
 const TelegramBot = require('node-telegram-bot-api');
-const NavCalendar = require('telegram-inline-calendar')
+const Calendar = require('telegram-inline-calendar')
 process.env.NTBA_FIX_319 = 1;
 const bot = new TelegramBot(TOKEN, {polling: true});
-const calendar = new NavCalendar(bot, {
+const calendar = new Calendar(bot, {
     date_format: 'MMM D, YYYY h:mm A',
     language: 'de',
     start_week_day: 1,
@@ -163,9 +163,9 @@ bot.on("callback_query", (query) => {
 const TOKEN = process.env.TELEGRAM_TOKEN || 'YOUR_TELEGRAM_BOT_TOKEN';
 
 const {Telegraf} = require('telegraf');
-const NavCalendar = require('telegram-inline-calendar')
+const Calendar = require('telegram-inline-calendar')
 const bot = new Telegraf(TOKEN);
-const calendar = new NavCalendar(bot, {
+const calendar = new Calendar(bot, {
     date_format: 'MMM D, YYYY h:mm A',
     language: 'de',
     start_week_day: 1,
@@ -195,9 +195,9 @@ process.once('SIGTERM', () => bot.stop('SIGTERM'));
 const TOKEN = process.env.TELEGRAM_TOKEN || 'YOUR_TELEGRAM_BOT_TOKEN';
 
 const Telebot = require('telebot');
-const NavCalendar = require('telegram-inline-calendar')
+const Calendar = require('telegram-inline-calendar')
 const bot = new Telebot(TOKEN);
-const calendar = new NavCalendar(bot, {
+const calendar = new Calendar(bot, {
     date_format: 'MMM D, YYYY h:mm A',
     language: 'de',
     start_week_day: 1,
@@ -226,9 +226,9 @@ bot.connect();
 const TOKEN = process.env.TELEGRAM_TOKEN || 'YOUR_TELEGRAM_BOT_TOKEN';
 
 const {Bot} = require('grammy');
-const NavCalendar = require('telegram-inline-calendar')
+const Calendar = require('telegram-inline-calendar')
 const bot = new Bot(TOKEN);
-const calendar = new NavCalendar(bot, {
+const calendar = new Calendar(bot, {
     date_format: 'MMM D, YYYY h:mm A',
     language: 'de',
     start_week_day: 1,
@@ -261,10 +261,10 @@ bot.start();
 const TOKEN = process.env.TELEGRAM_TOKEN || 'YOUR_TELEGRAM_BOT_TOKEN';
 
 const TelegramBot = require('node-telegram-bot-api');
-const NavCalendar = require('telegram-inline-calendar')
+const Calendar = require('telegram-inline-calendar')
 process.env.NTBA_FIX_319 = 1;
 const bot = new TelegramBot(TOKEN, {polling: true});
-const calendar = new NavCalendar(bot, {
+const calendar = new Calendar(bot, {
     date_format: 'HH:mm',
     language: 'fr',
     time_range: "05:00-08:59",
@@ -289,9 +289,9 @@ bot.on("callback_query", (query) => {
 const TOKEN = process.env.TELEGRAM_TOKEN || 'YOUR_TELEGRAM_BOT_TOKEN';
 
 const {Telegraf} = require('telegraf');
-const NavCalendar = require('telegram-inline-calendar')
+const Calendar = require('telegram-inline-calendar')
 const bot = new Telegraf(TOKEN);
-const calendar = new NavCalendar(bot, {
+const calendar = new Calendar(bot, {
     date_format: 'HH:mm',
     language: 'fr',
     bot_api: "telegraf",
@@ -319,9 +319,9 @@ process.once('SIGTERM', () => bot.stop('SIGTERM'));
 const TOKEN = process.env.TELEGRAM_TOKEN || 'YOUR_TELEGRAM_BOT_TOKEN';
 
 const Telebot = require('telebot');
-const NavCalendar = require('telegram-inline-calendar')
+const Calendar = require('telegram-inline-calendar')
 const bot = new Telebot(TOKEN);
-const calendar = new NavCalendar(bot, {
+const calendar = new Calendar(bot, {
     date_format: 'HH:mm',
     language: 'fr',
     bot_api: "telebot",
@@ -348,9 +348,9 @@ bot.connect();
 const TOKEN = process.env.TELEGRAM_TOKEN || 'YOUR_TELEGRAM_BOT_TOKEN';
 
 const {Bot} = require('grammy');
-const NavCalendar = require('telegram-inline-calendar')
+const Calendar = require('telegram-inline-calendar')
 const bot = new Bot(TOKEN);
-const calendar = new NavCalendar(bot, {
+const calendar = new Calendar(bot, {
     date_format: 'HH:mm',
     language: 'fr',
     bot_api: "grammy",
