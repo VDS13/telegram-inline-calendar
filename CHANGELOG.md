@@ -4,6 +4,12 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## [1.6.1](https://github.com/VDS13/telegram-inline-calendar/compare/1.6.0...1.6.1) - 2023-03-05
+
+### Changed:
+
+* Fix examples.
+
 ## [1.6.0](https://github.com/VDS13/telegram-inline-calendar/compare/1.5.0...1.6.0) - 2023-03-03
 
 ### Added:
@@ -12,7 +18,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 Example:
 ```js
-const calendar = new NavCalendar(bot, {
+const calendar = new Calendar(bot, {
     date_format: 'DD-MM-YYYY',
     language: 'en',
     bot_api: 'grammy',
@@ -31,7 +37,7 @@ const calendar = new NavCalendar(bot, {
 
 Example:
 ```js
-const calendar = new NavCalendar(bot, {
+const calendar = new Calendar(bot, {
     date_format: 'DD-MM-YYYY',
     language: 'en',
     bot_api: 'grammy',
