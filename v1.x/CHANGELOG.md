@@ -4,6 +4,12 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## [1.6.2](https://github.com/VDS13/telegram-inline-calendar/compare/1.6.1...1.6.2) - 2023-03-16
+
+### Added:
+
+* ESM support.
+
 ## [1.6.1](https://github.com/VDS13/telegram-inline-calendar/compare/1.6.0...1.6.1) - 2023-03-05
 
 ### Changed:

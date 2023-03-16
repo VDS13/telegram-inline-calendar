@@ -1,0 +1,74 @@
+{
+    "week": {
+        "ru": ["Вс","Пн","Вт","Ср","Чт","Пт","Сб"],
+        "en": ["Su","Mo","Tu","We","Th","Fr","Sa"],
+        "de": ["So","Mo","Di","Mi","Do","Fr","Sa"],
+        "es": ["Do","Lu","Ma","Mi","Ju","Vi","Sá"],
+        "fr": ["Di","Lu","Ma","Me","Je","Ve","Sa"],
+        "it": ["Do","Lu","Ma","Me","Gi","Ve","Sa"]
+    },
+    "month3": {
+        "ru": ["Янв", "Фев", "Мар", "Апр", "Май", "Июн", "Июл", "Авг", "Сен", "Окт", "Ноя", "Дек"],
+        "en": ["Jan","Feb","Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+        "de": ["Jan","Feb", "Mär", "Apr", "Mai", "Jun", "Jul", "Aug", "Sep", "Okt", "Nov", "Dez"],
+        "es": ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"],
+        "fr": ["Jan", "Fév", "Mar", "Avr", "Mai", "Jui", "Jui", "Aoû", "Sep", "Oct", "Nov", "Déc"],
+        "it": ["Gen", "Feb", "Mar", "Apr", "Mag", "Giu", "Lug", "Ago", "Set", "Ott", "Nov", "Dic"]
+    },
+    "pick": {
+        "ru": "Выберите календарь",
+        "en": "Pick a calendar",
+        "de": "Wählen Sie einen Kalender aus",
+        "es": "Elige un calendario",
+        "fr": "Choisissez un calendrier",
+        "it": "Scegli un calendario"
+    },
+    "select": {
+        "ru": "Пожалуйста, выберите дату:",
+        "en": "Please select a date:",
+        "de": "Bitte wählen Sie ein Datum:",
+        "es": "Seleccione una fecha:",
+        "fr": "Veuillez sélectionner une date:",
+        "it": "Seleziona una data:"
+    },
+    "selecttime": {
+        "ru": "Пожалуйста, выберите время:",
+        "en": "Please select a time:",
+        "de": "Bitte wählen Sie eine Zeit aus:",
+        "es": "Seleccione una hora:",
+        "fr": "Veuillez sélectionner une heure:",
+        "it": "Seleziona un orario:"
+    },
+    "selectdatetime": {
+        "ru": "Пожалуйста, выберите дату и время:",
+        "en": "Please select a date and time:",
+        "de": "Bitte wählen Sie ein Datum und eine Uhrzeit aus:",
+        "es": "Por favor seleccione una fecha y hora:",
+        "fr": "Veuillez sélectionner une date et une heure:",
+        "it": "Si prega di selezionare una data e un'ora:"
+    },
+    "navigafion": {
+        "ru": "Навигационный календарь",
+        "en": "Navigation Calendar",
+        "de": "Navigationskalender",
+        "es": "Calendario de navegación",
+        "fr": "Calendrier de navigation",
+        "it": "Calendario di navigazione"
+    },
+    "dialog": {
+        "ru": "Диалоговый календарь",
+        "en": "Dialog Calendar",
+        "de": "Dialogkalender",
+        "es": "Calendario de diálogo",
+        "fr": "Calendrier de dialogue",
+        "it": "Calendario di dialogo"
+    },
+    "back": {
+        "ru": "Назад",
+        "en": "Back",
+        "de": "Zurück",
+        "es": "Atrás",
+        "fr": "Dos",
+        "it": "Indietro"
+    }
+}
