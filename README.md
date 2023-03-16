@@ -33,7 +33,7 @@ Supported Telegram bot libraries:
 
 ## 📦 Install
 There are two versions:
-### v1.x - if you are using CommonJS module
+### v1.x - if you are using CommonJS modules
 ```sh
 npm i telegram-inline-calendar
 ```
