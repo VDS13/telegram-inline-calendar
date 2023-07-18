@@ -24,6 +24,7 @@ Supported languages:
 * Spanish
 * Italian
 * German
+* Turkish
 
 Supported Telegram bot libraries:
 * [Telegraf](https://github.com/telegraf/telegraf)
