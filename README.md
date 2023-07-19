@@ -281,7 +281,7 @@ bot.start();
 ```javascript
 {
     date_format: 'YYYY-MM-DD',                     //Datetime result format
-    language: 'en',                                //Language (en/es/de/es/fr/it)
+    language: 'en',                                //Language (en/es/de/es/fr/it/tr/id)
     bot_api: 'node-telegram-bot-api',              //Telegram bot library
     close_calendar: true,                          //Close calendar after date selection
     start_week_day: 0,                             //First day of the week(Sunday - `0`, Monday - `1`, Tuesday - `2` and so on)
