@@ -4,16 +4,11 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
-## [1.6.4](https://github.com/VDS13/telegram-inline-calendar/compare/1.6.3...1.6.4) - 2023-07-19
+## [1.6.4](https://github.com/VDS13/telegram-inline-calendar/compare/1.6.2...1.6.4) - 2023-07-19
 
 ### Added:
 
 * Indonesian language support.
-
-## [1.6.3](https://github.com/VDS13/telegram-inline-calendar/compare/1.6.2...1.6.3) - 2023-07-18
-
-### Added:
-
 * Turkish language support.
 
 ## [1.6.2](https://github.com/VDS13/telegram-inline-calendar/compare/1.6.1...1.6.2) - 2023-03-16
