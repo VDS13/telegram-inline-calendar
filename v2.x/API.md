@@ -31,6 +31,10 @@ Calendar
 | [options.start_date] | <code>Boolean\|String</code> | <code>false</code> | Minimum date of the calendar in the format "YYYY-MM-DD". |
 | [options.stop_date] | <code>Boolean\|String</code> | <code>false</code> | Maximum date of the calendar in the format "YYYY-MM-DD". |
 | [options.custom_start_msg] | <code>Boolean\|String</code> | <code>false</code> | Text of the message sent with the calendar/time selector. |
+| [options.lock_date] | <code>Boolean</code> | <code>false</code> | Enable blocked dates list. |
+| [options.lock_datetime] | <code>Boolean</code> | <code>false</code> | Enable list of blocked dates and times. |
+| [lock_date_array] | <code>Array</code> | <code>[]</code> | Аrray of blocked dates in string format in the format `"YYYY-MM-DD"`. |
+| [lock_datetime_array] | <code>Array</code> | <code>[]</code> | Аrray of blocked dates and times in string format in the format `"YYYY-MM-DD HH:mm"`. |
 
 <a name="Calendar+startNavCalendar"></a>
 

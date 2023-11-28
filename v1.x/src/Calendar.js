@@ -12,13 +12,41 @@ module.exports = class Calendar {
         this.options.time_selector_mod = (typeof options.time_selector_mod === 'undefined') ? false : options.time_selector_mod;
         this.options.time_range = (typeof options.time_range === 'undefined') ? "00:00-23:59" : options.time_range;
         this.options.time_step = (typeof options.time_step === 'undefined') ? "30m" : options.time_step;
-        this.options.start_date = (typeof options.start_date === 'undefined') ? false : options.start_date;
-        this.options.stop_date = (typeof options.stop_date === 'undefined') ? false : options.stop_date;
+        if (typeof options.start_date === 'undefined') {
+            this.options.start_date = false;
+        } else {
+            if (options.start_date === 'now') {
+                this.options.start_date = dayjs().format("YYYY-MM-DD HH:mm");
+            } else {
+                this.options.start_date = dayjs(options.start_date).format("YYYY-MM-DD HH:mm");
+            }
+        }
+        if (typeof options.stop_date === 'undefined') {
+            this.options.stop_date = false;
+        } else {
+            if (options.stop_date === 'now') {
+                this.options.stop_date = dayjs().format("YYYY-MM-DD HH:mm");
+            } else if (dayjs(options.stop_date).format("HH:mm") == '00:00') {
+                this.options.stop_date = dayjs(options.stop_date).format("YYYY-MM-DD") + " 23:59";
+            } else {
+                this.options.stop_date = dayjs(options.stop_date).format("YYYY-MM-DD HH:mm");
+            }
+        }
         this.options.custom_start_msg = (typeof options.custom_start_msg === 'undefined') ? false : options.custom_start_msg;
+        this.options.lock_datetime = (typeof options.lock_datetime === 'undefined') ? false : options.lock_datetime;
+        this.options.lock_date = (typeof options.lock_date === 'undefined') ? false : options.lock_date;
+        if (this.options.lock_datetime) {
+            this.lock_datetime_array = new Array();
+        }
+        if (this.options.lock_date) {
+            this.lock_date_array = new Array();
+        }
         this.bot = bot;
         this.chats = new Map();
         this.addCustomStartMsg();
         this.libraryInitialization();
+        this.dateFuncInitialization();
+        this.datetimeFuncInitialization();
     }
     NodeTelegramBotApi = {
         editMessageReplyMarkupCalendar(date, query) {
@@ -113,6 +141,28 @@ module.exports = class Calendar {
             return menu;
         }
     };
+    DatetimeFunc = {
+        withoutLockDatetime(stop, datetime, type) {
+            return (dayjs(stop).diff(datetime, type) < 0) ? true : false;
+        },
+        withLockDatetime(stop, datetime, type) {
+            return (dayjs(stop).diff(datetime, type) < 0 || this.lock_datetime_array.includes(datetime)) ? true : false;
+        }
+    };
+    DateFunc = {
+        withoutLockDate(date, d) {
+            if ((!this.options.start_date || (this.options.start_date && dayjs(date).date(d).hour(0).minute(0).diff(dayjs(this.options.start_date).hour(0).minute(0), 'day') >= 0)) && (!this.options.stop_date || (this.options.stop_date && dayjs(this.options.stop_date).hour(0).minute(0).diff(dayjs(date).date(d).hour(0).minute(0), 'day') >= 0))) {
+                return true;
+            }
+            return false;
+        },
+        withLockDate(date, d) {
+            if ((!this.options.start_date || (this.options.start_date && dayjs(date).date(d).hour(0).minute(0).diff(dayjs(this.options.start_date).hour(0).minute(0), 'day') >= 0)) && (!this.options.stop_date || (this.options.stop_date && dayjs(this.options.stop_date).hour(0).minute(0).diff(dayjs(date).date(d).hour(0).minute(0), 'day') >= 0)) && !this.lock_date_array.includes(date.getFullYear() + '-' + this.twoDigits(date.getMonth() + 1) + '-' + this.twoDigits(d))) {
+                return true;
+            }
+            return false;
+        }
+    };
     addCustomStartMsg() {
         if (this.options.custom_start_msg !== false) {
             lang.select[this.options.language] = this.options.custom_start_msg;
@@ -149,6 +199,20 @@ module.exports = class Calendar {
             this.sendMessageTime = this.Grammy.sendMessageTime;
             this.deleteMessage = this.Grammy.deleteMessage;
             this.replyMarkupObject = this.Grammy.replyMarkupObject;
+        }
+    }
+    dateFuncInitialization() {
+        if (this.options.lock_date) {
+            this.checkDate = this.DateFunc.withLockDate;
+        } else {
+            this.checkDate = this.DateFunc.withoutLockDate;
+        }
+    }
+    datetimeFuncInitialization() {
+        if (this.options.lock_datetime) {
+            this.checkDatetime = this.DatetimeFunc.withLockDatetime;
+        } else {
+            this.checkDatetime = this.DatetimeFunc.withoutLockDatetime;
         }
     }
     weekDaysButtons(day) {
@@ -190,23 +254,54 @@ module.exports = class Calendar {
             fc++;
             d++;
         }
-        if (dayjs(datetime).format("HH") < time_range[0].split(':')[0] || (dayjs(datetime).format("HH") == time_range[0].split(':')[0] && dayjs(datetime).format("mm") <= time_range[0].split(':')[1])) {
-            datetime.setHours(time_range[0].split(':')[0]);
-            datetime.setMinutes(time_range[0].split(':')[1]);
-            datetime.setSeconds(0);
-            flag_start++;
+        if (this.options.start_date !== false) {
+            if (dayjs(datetime).format("YYYY-MM-DD") != dayjs(this.options.start_date).format("YYYY-MM-DD")) {
+                if (dayjs(datetime).format("HH") < time_range[0].split(':')[0] || (dayjs(datetime).format("HH") == time_range[0].split(':')[0] && dayjs(datetime).format("mm") <= time_range[0].split(':')[1])) {
+                    datetime.setHours(time_range[0].split(':')[0]);
+                    datetime.setMinutes(time_range[0].split(':')[1]);
+                    datetime.setSeconds(0);
+                    flag_start++;
+                }
+            } else {
+                if (dayjs(datetime).format("HH") < time_range[0].split(':')[0] || (dayjs(datetime).format("HH") == time_range[0].split(':')[0] && dayjs(datetime).format("mm") <= time_range[0].split(':')[1])) {
+                    datetime.setHours(time_range[0].split(':')[0]);
+                    datetime.setMinutes(time_range[0].split(':')[1]);
+                    datetime.setSeconds(0);
+                    flag_start = 1;
+                }
+                if (dayjs(datetime).format("HH") < dayjs(this.options.start_date).format("HH") || (dayjs(datetime).format("HH") == dayjs(this.options.start_date).format("HH") && dayjs(datetime).format("mm") <= dayjs(this.options.start_date).format("mm"))) {
+                    datetime.setHours(dayjs(this.options.start_date).format("H"));
+                    datetime.setMinutes(dayjs(this.options.start_date).format("m"));
+                    datetime.setSeconds(0);
+                    flag_start = 1;
+                }
+            }
+        } else {
+            if (dayjs(datetime).format("HH") < time_range[0].split(':')[0] || (dayjs(datetime).format("HH") == time_range[0].split(':')[0] && dayjs(datetime).format("mm") <= time_range[0].split(':')[1])) {
+                datetime.setHours(time_range[0].split(':')[0]);
+                datetime.setMinutes(time_range[0].split(':')[1]);
+                datetime.setSeconds(0);
+                flag_start++;
+            }
         }
         stop = new Date(datetime);
         stop.setHours(time_range[1].split(':')[0]);
         stop.setMinutes(time_range[1].split(':')[1]);
         stop.setSeconds(0);
+        if (this.options.stop_date !== false && dayjs(stop).format("YYYY-MM-DD") == dayjs(this.options.stop_date).format("YYYY-MM-DD")) {
+            if (dayjs(stop).format("HH") > dayjs(this.options.stop_date).format("HH") || (dayjs(stop).format("HH") == dayjs(this.options.stop_date).format("HH") && dayjs(stop).format("mm") > dayjs(this.options.stop_date).format("mm"))) {
+                stop.setHours(dayjs(this.options.stop_date).format("H"));
+                stop.setMinutes(dayjs(this.options.stop_date).format("m"));
+                stop.setSeconds(0);
+            }
+        }
         for (i = d; i < d + 4; i++) {
             cnk.inline_keyboard.push([{},{},{},{}]);
             for(j = 0; j < 4; j++) {
                 if (i === d && j === 0) {
                     start = new Date(datetime);
                 }
-                cnk.inline_keyboard[i][j] = (dayjs(stop).diff(dayjs(datetime).format("YYYY-MM-DD HH:mm"), type) < 0) ? {text: ' ', callback_data: ' '} : {text: dayjs(datetime).format("HH:mm"), callback_data: 't_' + dayjs(datetime).format("YYYY-MM-DD HH:mm")  + '_0'};
+                cnk.inline_keyboard[i][j] = (this.checkDatetime(stop, dayjs(datetime).format("YYYY-MM-DD HH:mm"), type)) ? {text: ' ', callback_data: ' '} : {text: dayjs(datetime).format("HH:mm"), callback_data: 't_' + dayjs(datetime).format("YYYY-MM-DD HH:mm")  + '_0'};
                 datetime = new Date(dayjs(datetime).add(step, type).format("YYYY-MM-DD HH:mm"));
             }
             if (dayjs(stop).diff(dayjs(datetime).format("YYYY-MM-DD HH:mm"), type) < 0) {
@@ -260,7 +355,7 @@ module.exports = class Calendar {
                 if ((i == 2 && j < this.startWeekDay(date.getDay())) || d > cd) {
                     cnk.inline_keyboard[i][j] = {text: ' ', callback_data: ' '};
                 } else {
-                    if ((!this.options.start_date || (this.options.start_date && dayjs(date).date(d).hour(0).diff(dayjs(this.options.start_date).hour(0), 'day') >= 0)) && (!this.options.stop_date || (this.options.stop_date && dayjs(this.options.stop_date).hour(0).diff(dayjs(date).date(d).hour(0), 'day') >= 0))) {
+                    if (this.checkDate(date, d)) {
                         cnk.inline_keyboard[i][j] = {text: d, callback_data: 'n_' + date.getFullYear() + '-' + this.twoDigits(date.getMonth() + 1) + '-' + this.twoDigits(d) + '_0'};
                     } else {
                         cnk.inline_keyboard[i][j] = {text: ' ', callback_data: ' '};
@@ -289,7 +384,31 @@ module.exports = class Calendar {
         now.setHours(0);
         now.setMinutes(0);
         now.setSeconds(0);
-        this.sendMessageCalendar(this.replyMarkupObject(this.createNavigationKeyboard(now)), msg);
+        if (this.options.start_date !== false) {
+            if (new Date(dayjs(this.options.start_date).format("YYYY-MM-01")) > now) {
+                this.sendMessageCalendar(this.replyMarkupObject(this.createNavigationKeyboard(new Date(dayjs(this.options.start_date).format("YYYY-MM-01")))), msg);
+            } else {
+                if (this.options.stop_date !== false) {
+                    if (new Date(this.options.stop_date) < now) {
+                        this.sendMessageCalendar(this.replyMarkupObject(this.createNavigationKeyboard(new Date(dayjs(this.options.start_date).format("YYYY-MM-01")))), msg);
+                    } else {
+                        this.sendMessageCalendar(this.replyMarkupObject(this.createNavigationKeyboard(now)), msg);
+                    }
+                } else {
+                    this.sendMessageCalendar(this.replyMarkupObject(this.createNavigationKeyboard(now)), msg);
+                }
+            }
+        } else {
+            if (this.options.stop_date !== false) {
+                if (new Date(this.options.stop_date) < now) {
+                    this.sendMessageCalendar(this.replyMarkupObject(this.createNavigationKeyboard(new Date(dayjs(this.options.stop_date).format("YYYY-MM-01")))), msg);
+                } else {
+                    this.sendMessageCalendar(this.replyMarkupObject(this.createNavigationKeyboard(now)), msg);
+                }
+            } else {
+                this.sendMessageCalendar(this.replyMarkupObject(this.createNavigationKeyboard(now)), msg);
+            }
+        }
     }
     startTimeSelector(msg) {
         this.sendMessageTime(this.replyMarkupObject(this.createTimeSelector()), msg);

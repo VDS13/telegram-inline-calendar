@@ -288,9 +288,11 @@ bot.start();
     time_selector_mod: false,                      //Enable time selection after a date is selected.
     time_range: "00:00-23:59",                     //Allowed time range in "HH:mm-HH:mm" format
     time_step: "30m",                              //Time step in the format "<Time step><m | h>"
-    start_date: false,                             //Minimum date of the calendar in the format "YYYY-MM-DD"
-    stop_date: false,                              //Maximum date of the calendar in the format "YYYY-MM-DD"
-    custom_start_msg: false                        //Text of the message sent with the calendar/time selector
+    start_date: false,                             //Minimum date of the calendar in the format "YYYY-MM-DD" or "YYYY-MM-DD HH:mm" or "now"
+    stop_date: false,                              //Maximum date of the calendar in the format "YYYY-MM-DD" or "YYYY-MM-DD HH:mm" or "now"
+    custom_start_msg: false,                       //Text of the message sent with the calendar/time selector
+    lock_date: false,                              //Enable blocked dates list
+    lock_datetime: false                           //Enable list of blocked dates and times
 }
 ```
 
