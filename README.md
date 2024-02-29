@@ -300,4 +300,4 @@ bot.start();
 
 **The MIT License (MIT)**
 
-Copyright © 2022-2023 Dmitry Vyazin
+Copyright © 2022-2024 Dmitry Vyazin
