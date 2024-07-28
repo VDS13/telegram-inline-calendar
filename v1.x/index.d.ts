@@ -215,7 +215,5 @@ export declare class Calendar {
    * Change current calendar language.
    * @param lang Code of language
    */
-  changeLang(lang: CalendarOptions['language']): void {
-    this.options.language = lang;
-  }
+  changeLang(lang: CalendarOptions['language']): void 
 }
