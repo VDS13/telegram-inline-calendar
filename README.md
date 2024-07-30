@@ -26,6 +26,7 @@ Supported languages:
 * German
 * Turkish
 * Indonesian
+* Ukrainian
 
 Supported Telegram bot libraries:
 * [Telegraf](https://github.com/telegraf/telegraf)
@@ -43,6 +44,11 @@ npm i telegram-inline-calendar
 ```sh
 npm i telegram-inline-calendar@ecmascript
 ```
+> ✍️ **Note:** If you use Typescript you can install this package that contains type definitions for this library
+>```sh
+>npm install --save-dev telegram-inline-calendar-types
+>```
+
 ## 🎚️ Changelog ([v1.x](https://github.com/VDS13/telegram-inline-calendar/blob/main/v1.x/CHANGELOG.md) or [v2.x](https://github.com/VDS13/telegram-inline-calendar/blob/main/v2.x/CHANGELOG.md))
 
 ## 🗺 API ([v1.x](https://github.com/VDS13/telegram-inline-calendar/blob/main/v1.x/API.md) or [v2.x](https://github.com/VDS13/telegram-inline-calendar/blob/main/v2.x/API.md))
@@ -281,7 +287,7 @@ bot.start();
 ```javascript
 {
     date_format: 'YYYY-MM-DD',                     //Datetime result format
-    language: 'en',                                //Language (en/es/de/es/fr/it/tr/id)
+    language: 'en',                                //Language (en/es/de/es/fr/it/tr/id/uk)
     bot_api: 'node-telegram-bot-api',              //Telegram bot library
     close_calendar: true,                          //Close calendar after date selection
     start_week_day: 0,                             //First day of the week(Sunday - `0`, Monday - `1`, Tuesday - `2` and so on)
