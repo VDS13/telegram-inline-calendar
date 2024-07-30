@@ -7,7 +7,8 @@
         "fr": ["Di","Lu","Ma","Me","Je","Ve","Sa"],
         "it": ["Do","Lu","Ma","Me","Gi","Ve","Sa"],
         "tr": ["Pzt", "Sal", "Çar", "Per", "Cum", "Cmt", "Paz"],
-        "id": ["Min", "Sen", "Sel", "Rab", "Kam", "Jum", "Sab"]
+        "id": ["Min", "Sen", "Sel", "Rab", "Kam", "Jum", "Sab"],
+        "uk": ["Нд", "Пн", "Вт", "Ср", "Чт", "Пт", "Сб"]
     },
     "month3": {
         "ru": ["Янв", "Фев", "Мар", "Апр", "Май", "Июн", "Июл", "Авг", "Сен", "Окт", "Ноя", "Дек"],
@@ -17,7 +18,8 @@
         "fr": ["Jan", "Fév", "Mar", "Avr", "Mai", "Jui", "Jui", "Aoû", "Sep", "Oct", "Nov", "Déc"],
         "it": ["Gen", "Feb", "Mar", "Apr", "Mag", "Giu", "Lug", "Ago", "Set", "Ott", "Nov", "Dic"],
         "tr": ["Oca", "Şub", "Mar", "Nis", "May", "Haz", "Tem", "Ağu", "Eyl", "Eki", "Kas", "Ara"],
-        "id": ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Ags", "Sep", "Okt", "Nov", "Des"]
+        "id": ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Ags", "Sep", "Okt", "Nov", "Des"],
+        "uk": ["Січ", "Лют", "Бер", "Кві", "Тра", "Чер", "Лип", "Сер", "Вер", "Жов", "Лис", "Гру"]
     },
     "pick": {
         "ru": "Выберите календарь",
@@ -27,7 +29,8 @@
         "fr": "Choisissez un calendrier",
         "it": "Scegli un calendario",
         "tr": "Bir takvim seçin",
-        "id": "Pilih Kalendernya kak"
+        "id": "Pilih Kalendernya kak",
+        "uk": "Виберіть календар"
     },
     "select": {
         "ru": "Пожалуйста, выберите дату:",
@@ -37,7 +40,8 @@
         "fr": "Veuillez sélectionner une date:",
         "it": "Seleziona una data:",
         "tr": "Lütfen bir tarih seçin:",
-        "id": "Pilih Tanggalnya kak"
+        "id": "Pilih Tanggalnya kak",
+        "uk": "Будь ласка, виберіть дату:"
     },
     "selecttime": {
         "ru": "Пожалуйста, выберите время:",
@@ -47,7 +51,8 @@
         "fr": "Veuillez sélectionner une heure:",
         "it": "Seleziona un orario:",
         "tr": "Lütfen bir zaman seçin:",
-        "id": "Pilih Waktunya Kak"
+        "id": "Pilih Waktunya Kak",
+        "uk": "Будь ласка, виберіть час:"
     },
     "selectdatetime": {
         "ru": "Пожалуйста, выберите дату и время:",
@@ -57,7 +62,8 @@
         "fr": "Veuillez sélectionner une date et une heure:",
         "it": "Si prega di selezionare una data e un'ora:",
         "tr": "Lütfen bir tarih ve zaman seçin:",
-        "id": "Pilih Tanggal Dan Waktunya Kak"
+        "id": "Pilih Tanggal Dan Waktunya Kak",
+        "uk": "Будь ласка, виберіть дату та час:"
     },
     "navigafion": {
         "ru": "Навигационный календарь",
@@ -67,7 +73,8 @@
         "fr": "Calendrier de navigation",
         "it": "Calendario di navigazione",
         "tr": "Navigasyon Takvimi",
-        "id": "Kalender Navigasi"
+        "id": "Kalender Navigasi",
+        "uk": "Навігаційний календар"
     },
     "dialog": {
         "ru": "Диалоговый календарь",
@@ -77,7 +84,8 @@
         "fr": "Calendrier de dialogue",
         "it": "Calendario di dialogo",
         "tr": "Diyalog Takvimi",
-        "id": "Kalender Dialog"
+        "id": "Kalender Dialog",
+        "uk": "Діалоговий календар"
     },
     "back": {
         "ru": "Назад",
@@ -87,6 +95,7 @@
         "fr": "Dos",
         "it": "Indietro",
         "tr": "Geri",
-        "id": "Balik"
+        "id": "Balik",
+        "uk": "Назад"
     }
-            }
+}

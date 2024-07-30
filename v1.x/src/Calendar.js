@@ -496,5 +496,9 @@ module.exports = class Calendar {
             }
         }
         return res;
-    }
+  }
+
+  changeLang(lang) {
+    this.options.language = lang;
+  }
 }

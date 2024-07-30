@@ -4,6 +4,14 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## [1.8.0](https://github.com/VDS13/telegram-inline-calendar/compare/1.7.0...1.8.0) - 2024-07-30
+
+### Added:
+
+* Ukrainian language support.
+* Function `changeLang`, which changes the language of the bot messages. A little later we will add the ability to bind the language to the user.
+(Thanks @semklim)
+
 ## [1.7.0](https://github.com/VDS13/telegram-inline-calendar/compare/1.6.4...1.7.0) - 2023-11-28
 
 ### Added:

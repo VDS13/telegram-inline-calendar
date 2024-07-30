@@ -1,3 +1,4 @@
+import dayjs from 'dayjs';
 import { readFile } from 'fs/promises';
 import { createRequire } from "module";
 const lang = JSON.parse(
@@ -5,7 +6,6 @@ const lang = JSON.parse(
         new URL('./language.json', import.meta.url)
     )
 );
-import dayjs from 'dayjs';
 
 export class Calendar {
     constructor(bot = false, options = {}) {
@@ -636,5 +636,8 @@ export class Calendar {
             cnk.inline_keyboard[cr - 1][2] = {text: ' ', callback_data: ' '};
         }
         return cnk;
-    }
+  }
+  changeLang(lang) {
+    this.options.language = lang;
+  }
 }

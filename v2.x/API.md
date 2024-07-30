@@ -15,6 +15,7 @@ Calendar
         * [.clickButtonCalendar(query)](#Calendar+clickButtonCalendar) ⇒ <code>String \| Number</code>
         * [.createNavigationKeyboard(date)](#Calendar+createNavigationKeyboard) ⇒ <code>Object</code>
         * [.createTimeSelector(date, from_calendar)](#Calendar+createTimeSelector) ⇒ <code>Object</code>
+        * [.changeLang(language)](#Calendar+changeLang)
 ### new Calendar(bot, [options])
 | Param | Type | Default | Description |
 | --- | --- | --- | --- |
@@ -94,3 +95,14 @@ Time selector generation.
 | --- | --- | --- | --- |
 | date | <code>Date</code> | <code>undefined</code> | Date Objects for which you want to get a time selector. |
 | from_calendar | <code>Boolean</code> | <code>false</code> | Calling the time selector from the calendar. |
+
+<a name="Calendar+changeLang"></a>
+
+### calendar.changeLang(language)
+Changes the language of the bot messages.
+
+**Kind**: instance method of [<code>Calendar</code>](#Calendar)  
+
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| language | <code>String</code> | <code>undefined</code> | Language (en/es/de/es/fr/it/tr/id/uk). |
