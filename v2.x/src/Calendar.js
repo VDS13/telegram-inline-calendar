@@ -636,8 +636,8 @@ export class Calendar {
             cnk.inline_keyboard[cr - 1][2] = {text: ' ', callback_data: ' '};
         }
         return cnk;
-  }
-  changeLang(lang) {
-    this.options.language = lang;
-  }
+    }
+    changeLang(lang) {
+        this.options.language = lang;
+    }
 }
