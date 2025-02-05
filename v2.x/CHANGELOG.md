@@ -4,6 +4,16 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## [2.3.0](https://github.com/VDS13/telegram-inline-calendar/compare/2.2.0...2.3.0) - 2025-02-05
+
+### Added:
+
+* Option `user_lang_select` which gives the user the ability to select the language of the calendar.
+
+<div align="left">
+<img src="https://github.com/VDS13/telegram-inline-calendar/blob/main/img/ex8.gif" width="300"/>
+</div>
+
 ## [2.2.0](https://github.com/VDS13/telegram-inline-calendar/compare/2.1.0...2.2.0) - 2024-07-30
 
 ### Added:

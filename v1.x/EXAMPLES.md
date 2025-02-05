@@ -130,6 +130,7 @@ bot.on("callback_query:data", (ctx) => {
         }
     }
 });
+bot.start();
 ```
 
 ### <a name="res1"> Result:

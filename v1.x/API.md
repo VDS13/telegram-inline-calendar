@@ -13,8 +13,8 @@ Calendar
         * [.startNavCalendar(msg)](#Calendar+startNavCalendar)
         * [.startTimeSelector(msg)](#Calendar+startTimeSelector)
         * [.clickButtonCalendar(query)](#Calendar+clickButtonCalendar) ⇒ <code>String \| Number</code>
-        * [.createNavigationKeyboard(date)](#Calendar+createNavigationKeyboard) ⇒ <code>Object</code>
-        * [.createTimeSelector(date, from_calendar)](#Calendar+createTimeSelector) ⇒ <code>Object</code>
+        * [.createNavigationKeyboard(language, date)](#Calendar+createNavigationKeyboard) ⇒ <code>Object</code>
+        * [.createTimeSelector(language, date, from_calendar)](#Calendar+createTimeSelector) ⇒ <code>Object</code>
         * [.changeLang(language)](#Calendar+changeLang)
 ### new Calendar(bot, [options])
 | Param | Type | Default | Description |
@@ -29,6 +29,7 @@ Calendar
 | [options.time_selector_mod] | <code>Boolean</code> | <code>false</code> | Enable time selection after a date is selected. |
 | [options.time_range] | <code>String</code> | <code>"00:00-23:59"</code> | Allowed time range in "HH:mm-HH:mm" format. |
 | [options.time_step] | <code>String</code> | <code>"30m"</code> | Time step in the format "\<Time step\>\<m \| h\>", where "m" - minutes, "h" - hours. (For example: <code>"30m"</code>, <code>"1h"</code>, <code>"150m"</code>). |
+| [options.user_lang_select] | <code>Boolean</code> | <code>false</code> | Ability to select the user's language. |
 | [options.start_date] | <code>Boolean\|String</code> | <code>false</code> | Minimum date of the calendar in the format "YYYY-MM-DD". |
 | [options.stop_date] | <code>Boolean\|String</code> | <code>false</code> | Maximum date of the calendar in the format "YYYY-MM-DD". |
 | [options.custom_start_msg] | <code>Boolean\|String</code> | <code>false</code> | Text of the message sent with the calendar/time selector. |
@@ -73,7 +74,7 @@ Handle clicking on the calendar or the time selector.
 
 <a name="Calendar+createNavigationKeyboard"></a>
 
-### calendar.createNavigationKeyboard(date) ⇒ <code>Object</code>
+### calendar.createNavigationKeyboard(language, date) ⇒ <code>Object</code>
 Calendar generation.
 
 **Kind**: instance method of [<code>Calendar</code>](#Calendar)  
@@ -81,11 +82,12 @@ Calendar generation.
 
 | Param | Type | Description |
 | --- | --- | --- |
+| language | <code>String</code> | <code>undefined</code> | Language (en/es/de/es/fr/it/tr/id/uk). |
 | date | <code>Date</code> | Year and month for which you want to get a calendar. |
 
 <a name="Calendar+createTimeSelector"></a>
 
-### calendar.createTimeSelector(date, from_calendar) ⇒ <code>Object</code>
+### calendar.createTimeSelector(language, date, from_calendar) ⇒ <code>Object</code>
 Time selector generation.
 
 **Kind**: instance method of [<code>Calendar</code>](#Calendar)  
@@ -93,6 +95,7 @@ Time selector generation.
 
 | Param | Type | Default | Description |
 | --- | --- | --- | --- |
+| language | <code>String</code> | <code>undefined</code> | Language (en/es/de/es/fr/it/tr/id/uk). |
 | date | <code>Date</code> | <code>undefined</code> | Date Objects for which you want to get a time selector. |
 | from_calendar | <code>Boolean</code> | <code>false</code> | Calling the time selector from the calendar. |
 

@@ -12,6 +12,7 @@ module.exports = class Calendar {
         this.options.time_selector_mod = (typeof options.time_selector_mod === 'undefined') ? false : options.time_selector_mod;
         this.options.time_range = (typeof options.time_range === 'undefined') ? "00:00-23:59" : options.time_range;
         this.options.time_step = (typeof options.time_step === 'undefined') ? "30m" : options.time_step;
+        this.options.user_lang_select = (typeof options.user_lang_select === 'undefined') ? false : options.user_lang_select;
         if (typeof options.start_date === 'undefined') {
             this.options.start_date = false;
         } else {
@@ -41,6 +42,9 @@ module.exports = class Calendar {
         if (this.options.lock_date) {
             this.lock_date_array = new Array();
         }
+        if (this.options.user_lang_select) {
+            this.user_lang = new Map();
+        }
         this.bot = bot;
         this.chats = new Map();
         this.addCustomStartMsg();
@@ -50,17 +54,20 @@ module.exports = class Calendar {
     }
     NodeTelegramBotApi = {
         editMessageReplyMarkupCalendar(date, query) {
-            this.bot.editMessageReplyMarkup(this.createNavigationKeyboard(date),{message_id: query.message.message_id, chat_id: query.message.chat.id})
+            this.bot.editMessageReplyMarkup(this.createNavigationKeyboard(this.checkLanguage(query.message.chat.id), date),{message_id: query.message.message_id, chat_id: query.message.chat.id})
         },
         editMessageReplyMarkupTime(date, query, from_calendar) {
-            this.bot.editMessageReplyMarkup(this.createTimeSelector(date, from_calendar),{message_id: query.message.message_id, chat_id: query.message.chat.id})
+            this.bot.editMessageReplyMarkup(this.createTimeSelector(this.checkLanguage(query.message.chat.id), date, from_calendar),{message_id: query.message.message_id, chat_id: query.message.chat.id})
         },
         sendMessageCalendar(menu, msg) {
-            var l = (this.options.time_selector_mod === true) ? lang.selectdatetime[this.options.language] : lang.select[this.options.language];
+            var l = (this.options.time_selector_mod === true) ? lang.selectdatetime[this.checkLanguage(msg.chat.id)] : lang.select[this.checkLanguage(msg.chat.id)];
             this.bot.sendMessage(msg.chat.id, l, menu).then((msg_promise) => this.chats.set(msg_promise.chat.id, msg_promise.message_id));
         },
         sendMessageTime(menu, msg) {
-            this.bot.sendMessage(msg.chat.id, lang.selecttime[this.options.language], menu).then((msg_promise) => this.chats.set(msg_promise.chat.id, msg_promise.message_id))
+            this.bot.sendMessage(msg.chat.id, lang.selecttime[this.checkLanguage(msg.chat.id)], menu).then((msg_promise) => this.chats.set(msg_promise.chat.id, msg_promise.message_id))
+        },
+        sendMessageLanguageSelect(menu, msg) {
+            this.bot.sendMessage(msg.chat.id, lang.selectlang[this.options.language], menu).then((msg_promise) => this.chats.set(msg_promise.chat.id, msg_promise.message_id))
         },
         deleteMessage(query) {
             this.bot.deleteMessage(query.message.chat.id,query.message.message_id)
@@ -73,17 +80,20 @@ module.exports = class Calendar {
     };
     Telegraf = {
         editMessageReplyMarkupCalendar(date, query) {
-            this.bot.telegram.editMessageReplyMarkup(query.message.chat.id, query.message.message_id, null, this.createNavigationKeyboard(date))
+            this.bot.telegram.editMessageReplyMarkup(query.message.chat.id, query.message.message_id, null, this.createNavigationKeyboard(this.checkLanguage(query.message.chat.id), date))
         },
         editMessageReplyMarkupTime(date, query, from_calendar) {
-            this.bot.telegram.editMessageReplyMarkup(query.message.chat.id, query.message.message_id, null, this.createTimeSelector(date, from_calendar))
+            this.bot.telegram.editMessageReplyMarkup(query.message.chat.id, query.message.message_id, null, this.createTimeSelector(this.checkLanguage(query.message.chat.id), date, from_calendar))
         },
         sendMessageCalendar(menu, msg) {
-            var l = (this.options.time_selector_mod === true) ? lang.selectdatetime[this.options.language] : lang.select[this.options.language];
+            var l = (this.options.time_selector_mod === true) ? lang.selectdatetime[this.checkLanguage(msg.chat.id)] : lang.select[this.checkLanguage(msg.chat.id)];
             this.bot.telegram.sendMessage(msg.chat.id, l, menu).then((msg_promise) => this.chats.set(msg_promise.chat.id, msg_promise.message_id));
         },
         sendMessageTime(menu, msg) {
-            this.bot.telegram.sendMessage(msg.chat.id, lang.selecttime[this.options.language], menu).then((msg_promise) => this.chats.set(msg_promise.chat.id, msg_promise.message_id))
+            this.bot.telegram.sendMessage(msg.chat.id, lang.selecttime[this.checkLanguage(msg.chat.id)], menu).then((msg_promise) => this.chats.set(msg_promise.chat.id, msg_promise.message_id))
+        },
+        sendMessageLanguageSelect(menu, msg) {
+            this.bot.telegram.sendMessage(msg.chat.id, lang.selectlang[this.options.language], menu).then((msg_promise) => this.chats.set(msg_promise.chat.id, msg_promise.message_id))
         },
         deleteMessage(query) {
             this.bot.telegram.deleteMessage(query.message.chat.id,query.message.message_id)
@@ -96,17 +106,20 @@ module.exports = class Calendar {
     };
     Telebot = {
         editMessageReplyMarkupCalendar(date, query) {
-            this.bot.editMessageReplyMarkup({messageId: query.message.message_id, chatId: query.message.chat.id}, this.replyMarkupObject(this.createNavigationKeyboard(date)));
+            this.bot.editMessageReplyMarkup({messageId: query.message.message_id, chatId: query.message.chat.id}, this.replyMarkupObject(this.createNavigationKeyboard(this.checkLanguage(query.message.chat.id), date)));
         },
         editMessageReplyMarkupTime(date, query, from_calendar) {
-            this.bot.editMessageReplyMarkup({messageId: query.message.message_id, chatId: query.message.chat.id}, this.replyMarkupObject(this.createTimeSelector(date, from_calendar)));
+            this.bot.editMessageReplyMarkup({messageId: query.message.message_id, chatId: query.message.chat.id}, this.replyMarkupObject(this.createTimeSelector(this.checkLanguage(query.message.chat.id), date, from_calendar)));
         },
         sendMessageCalendar(menu, msg) {
-            var l = (this.options.time_selector_mod === true) ? lang.selectdatetime[this.options.language] : lang.select[this.options.language];
+            var l = (this.options.time_selector_mod === true) ? lang.selectdatetime[this.checkLanguage(msg.chat.id)] : lang.select[this.checkLanguage(msg.chat.id)];
             this.bot.sendMessage(msg.chat.id, l, menu).then((msg_promise) => this.chats.set(msg_promise.chat.id, msg_promise.message_id));
         },
         sendMessageTime(menu, msg) {
-            this.bot.sendMessage(msg.chat.id, lang.selecttime[this.options.language], menu).then((msg_promise) => this.chats.set(msg_promise.chat.id, msg_promise.message_id))
+            this.bot.sendMessage(msg.chat.id, lang.selecttime[this.checkLanguage(msg.chat.id)], menu).then((msg_promise) => this.chats.set(msg_promise.chat.id, msg_promise.message_id))
+        },
+        sendMessageLanguageSelect(menu, msg) {
+            this.bot.sendMessage(msg.chat.id, lang.selectlang[this.options.language], menu).then((msg_promise) => this.chats.set(msg_promise.chat.id, msg_promise.message_id))
         },
         deleteMessage(query) {
             this.bot.deleteMessage(query.message.chat.id,query.message.message_id)
@@ -120,17 +133,20 @@ module.exports = class Calendar {
     };
     Grammy = {
         editMessageReplyMarkupCalendar(date, query) {
-            this.bot.api.editMessageReplyMarkup(query.message.chat.id, query.message.message_id, this.replyMarkupObject(this.createNavigationKeyboard(date)));
+            this.bot.api.editMessageReplyMarkup(query.message.chat.id, query.message.message_id, this.replyMarkupObject(this.createNavigationKeyboard(this.checkLanguage(query.message.chat.id), date)));
         },
         editMessageReplyMarkupTime(date, query, from_calendar) {
-            this.bot.api.editMessageReplyMarkup(query.message.chat.id, query.message.message_id, this.replyMarkupObject(this.createTimeSelector(date, from_calendar)));
+            this.bot.api.editMessageReplyMarkup(query.message.chat.id, query.message.message_id, this.replyMarkupObject(this.createTimeSelector(this.checkLanguage(query.message.chat.id), date, from_calendar)));
         },
         sendMessageCalendar(menu, msg) {
-            var l = (this.options.time_selector_mod === true) ? lang.selectdatetime[this.options.language] : lang.select[this.options.language];
+            var l = (this.options.time_selector_mod === true) ? lang.selectdatetime[this.checkLanguage(msg.chat.id)] : lang.select[this.checkLanguage(msg.chat.id)];
             this.bot.api.sendMessage(msg.chat.id, l, menu).then((msg_promise) => this.chats.set(msg_promise.chat.id, msg_promise.message_id));
         },
         sendMessageTime(menu, msg) {
-            this.bot.api.sendMessage(msg.chat.id, lang.selecttime[this.options.language], menu).then((msg_promise) => this.chats.set(msg_promise.chat.id, msg_promise.message_id))
+            this.bot.api.sendMessage(msg.chat.id, lang.selecttime[this.checkLanguage(msg.chat.id)], menu).then((msg_promise) => this.chats.set(msg_promise.chat.id, msg_promise.message_id))
+        },
+        sendMessageLanguageSelect(menu, msg) {
+            this.bot.api.sendMessage(msg.chat.id, lang.selectlang[this.options.language], menu).then((msg_promise) => this.chats.set(msg_promise.chat.id, msg_promise.message_id))
         },
         deleteMessage(query) {
             this.bot.api.deleteMessage(query.message.chat.id,query.message.message_id)
@@ -163,11 +179,25 @@ module.exports = class Calendar {
             return false;
         }
     };
+    checkLanguage(chat_id) {
+        if (this.options.user_lang_select) {
+            return this.user_lang.get(chat_id);
+        }
+        return this.options.language;
+    }
     addCustomStartMsg() {
         if (this.options.custom_start_msg !== false) {
-            lang.select[this.options.language] = this.options.custom_start_msg;
-            lang.selectdatetime[this.options.language] = this.options.custom_start_msg;
-            lang.selecttime[this.options.language] = this.options.custom_start_msg;
+            if (this.options.user_lang_select) {
+                Object.keys(lang.select).forEach(function(key, index) {
+                    lang.select[key] = this.options.custom_start_msg;
+                    lang.selectdatetime[key] = this.options.custom_start_msg;
+                    lang.selecttime[key] = this.options.custom_start_msg;
+                });
+            } else {
+                lang.select[this.options.language] = this.options.custom_start_msg;
+                lang.selectdatetime[this.options.language] = this.options.custom_start_msg;
+                lang.selecttime[this.options.language] = this.options.custom_start_msg;
+            }
         }
     }
     libraryInitialization() {
@@ -176,6 +206,7 @@ module.exports = class Calendar {
             this.editMessageReplyMarkupTime = this.NodeTelegramBotApi.editMessageReplyMarkupTime;
             this.sendMessageCalendar = this.NodeTelegramBotApi.sendMessageCalendar;
             this.sendMessageTime = this.NodeTelegramBotApi.sendMessageTime;
+            this.sendMessageLanguageSelect = this.NodeTelegramBotApi.sendMessageLanguageSelect;
             this.deleteMessage = this.NodeTelegramBotApi.deleteMessage;
             this.replyMarkupObject = this.NodeTelegramBotApi.replyMarkupObject;
         } else if (this.options.bot_api == 'telegraf') {
@@ -183,6 +214,7 @@ module.exports = class Calendar {
             this.editMessageReplyMarkupTime = this.Telegraf.editMessageReplyMarkupTime;
             this.sendMessageCalendar = this.Telegraf.sendMessageCalendar;
             this.sendMessageTime = this.Telegraf.sendMessageTime;
+            this.sendMessageLanguageSelect = this.Telegraf.sendMessageLanguageSelect;
             this.deleteMessage = this.Telegraf.deleteMessage;
             this.replyMarkupObject = this.Telegraf.replyMarkupObject;
         } else if (this.options.bot_api == 'telebot') {
@@ -190,6 +222,7 @@ module.exports = class Calendar {
             this.editMessageReplyMarkupTime = this.Telebot.editMessageReplyMarkupTime;
             this.sendMessageCalendar = this.Telebot.sendMessageCalendar;
             this.sendMessageTime = this.Telebot.sendMessageTime;
+            this.sendMessageLanguageSelect = this.Telebot.sendMessageLanguageSelect;
             this.deleteMessage = this.Telebot.deleteMessage;
             this.replyMarkupObject = this.Telebot.replyMarkupObject;
         } else if (this.options.bot_api == 'grammy') {
@@ -197,6 +230,7 @@ module.exports = class Calendar {
             this.editMessageReplyMarkupTime = this.Grammy.editMessageReplyMarkupTime;
             this.sendMessageCalendar = this.Grammy.sendMessageCalendar;
             this.sendMessageTime = this.Grammy.sendMessageTime;
+            this.sendMessageLanguageSelect = this.Grammy.sendMessageLanguageSelect;
             this.deleteMessage = this.Grammy.deleteMessage;
             this.replyMarkupObject = this.Grammy.replyMarkupObject;
         }
@@ -235,7 +269,7 @@ module.exports = class Calendar {
         var date2 = new Date(year, month, 1);
         return Math.round((date2 - date1) / 1000 / 3600 / 24); 
     }
-    createTimeSelector(date = 'undefined', from_calendar = false) {
+    createTimeSelector(user_lang_t, date = 'undefined', from_calendar = false) {
         var i, j;
         var start, stop;
         var time_range = this.options.time_range.split('-');
@@ -248,7 +282,7 @@ module.exports = class Calendar {
         var d = 0, flag_start = 0, flag_stop = 0, fc = 0;
         if (from_calendar === true) {
             cnk.inline_keyboard.push([{},{},{}]);
-            cnk.inline_keyboard[d][0] = {text: lang.back[this.options.language], callback_data: 't_' + dayjs(datetime).format("YYYY-MM-DD") + '_back'};
+            cnk.inline_keyboard[d][0] = {text: lang.back[user_lang_t], callback_data: 't_' + dayjs(datetime).format("YYYY-MM-DD") + '_back'};
             cnk.inline_keyboard[d][1] = {text: dayjs(datetime).format("YYYY-MM-DD"), callback_data: ' '};
             cnk.inline_keyboard[d][2] = {text: ' ', callback_data: ' '};
             fc++;
@@ -317,7 +351,7 @@ module.exports = class Calendar {
         cnk.inline_keyboard[d][2] = (flag_stop === 1) ? {text: ' ', callback_data: ' '} :{text: '>', callback_data: 't_' + dayjs(datetime).format("YYYY-MM-DD HH:mm") + '_' + fc + '+'};
         return cnk;
     }
-    createNavigationKeyboard(date) {
+    createNavigationKeyboard(user_lang_t, date) {
         var i, j;
         var cnk = {};
         var cd = this.howMuchDays(date.getFullYear(), date.getMonth() + 1);
@@ -334,7 +368,7 @@ module.exports = class Calendar {
         } else {
             cnk.inline_keyboard[0][0] = {text: ' ', callback_data: ' '};
         }
-        cnk.inline_keyboard[0][1] = {text: lang.month3[this.options.language][date.getMonth()] + ' ' + date.getFullYear(), callback_data: ' '};
+        cnk.inline_keyboard[0][1] = {text: lang.month3[user_lang_t][date.getMonth()] + ' ' + date.getFullYear(), callback_data: ' '};
         if (!this.options.stop_date || (this.options.stop_date && dayjs(this.options.stop_date).format('YYYY') > dayjs(date).format('YYYY'))) {
             if (dayjs(date).add(1, 'year').format('YYYY') == dayjs(this.options.stop_date).format('YYYY')) {
                 cnk.inline_keyboard[0][2] = {text: '>>', callback_data: 'n_' + dayjs(this.options.stop_date).subtract(1, 'year').format("YYYY-MM") + '_++'};
@@ -346,7 +380,7 @@ module.exports = class Calendar {
         }
         cnk.inline_keyboard.push([{},{},{},{},{},{},{}]);
         for(j = 0; j < 7; j++) {
-            cnk.inline_keyboard[1][j] = {text: lang.week[this.options.language][this.weekDaysButtons(j)], callback_data: ' '};
+            cnk.inline_keyboard[1][j] = {text: lang.week[user_lang_t][this.weekDaysButtons(j)], callback_data: ' '};
         }
         var d = 1;
         for (i = 2; i <= cr - 2; i++) {
@@ -378,7 +412,32 @@ module.exports = class Calendar {
         }
         return cnk;
     }
+    createLanguageSelectPanel(msg, type) {
+        var cnk = {};
+        cnk.resize_keyboard = true;
+        cnk.inline_keyboard = [];
+        Object.keys(lang.selectlang).forEach(function(key, index) {
+            cnk.inline_keyboard.push([{text: lang.selectuserlang[key], callback_data: 'l_' + key + '_' + type}]);
+        });
+        this.sendMessageLanguageSelect(this.replyMarkupObject(cnk), msg);
+    }
     startNavCalendar(msg) {
+        if (this.options.user_lang_select) {
+            this.user_lang.delete(msg.chat.id);
+            this.createLanguageSelectPanel(msg, "calendar");
+        } else {
+            this.createStartCalendar(msg);
+        }
+    }
+    startTimeSelector(msg) {
+        if (this.options.user_lang_select) {
+            this.user_lang.delete(msg.chat.id);
+            this.createLanguageSelectPanel(msg, "timeselector");
+        } else {
+            this.createStartTimeSelector(msg);
+        }
+    }
+    createStartCalendar(msg) {
         var now = new Date();
         now.setDate(1);
         now.setHours(0);
@@ -386,32 +445,32 @@ module.exports = class Calendar {
         now.setSeconds(0);
         if (this.options.start_date !== false) {
             if (new Date(dayjs(this.options.start_date).format("YYYY-MM-01")) > now) {
-                this.sendMessageCalendar(this.replyMarkupObject(this.createNavigationKeyboard(new Date(dayjs(this.options.start_date).format("YYYY-MM-01")))), msg);
+                this.sendMessageCalendar(this.replyMarkupObject(this.createNavigationKeyboard(this.checkLanguage(msg.chat.id), new Date(dayjs(this.options.start_date).format("YYYY-MM-01")))), msg);
             } else {
                 if (this.options.stop_date !== false) {
                     if (new Date(this.options.stop_date) < now) {
-                        this.sendMessageCalendar(this.replyMarkupObject(this.createNavigationKeyboard(new Date(dayjs(this.options.start_date).format("YYYY-MM-01")))), msg);
+                        this.sendMessageCalendar(this.replyMarkupObject(this.createNavigationKeyboard(this.checkLanguage(msg.chat.id), new Date(dayjs(this.options.start_date).format("YYYY-MM-01")))), msg);
                     } else {
-                        this.sendMessageCalendar(this.replyMarkupObject(this.createNavigationKeyboard(now)), msg);
+                        this.sendMessageCalendar(this.replyMarkupObject(this.createNavigationKeyboard(this.checkLanguage(msg.chat.id), now)), msg);
                     }
                 } else {
-                    this.sendMessageCalendar(this.replyMarkupObject(this.createNavigationKeyboard(now)), msg);
+                    this.sendMessageCalendar(this.replyMarkupObject(this.createNavigationKeyboard(this.checkLanguage(msg.chat.id), now)), msg);
                 }
             }
         } else {
             if (this.options.stop_date !== false) {
                 if (new Date(this.options.stop_date) < now) {
-                    this.sendMessageCalendar(this.replyMarkupObject(this.createNavigationKeyboard(new Date(dayjs(this.options.stop_date).format("YYYY-MM-01")))), msg);
+                    this.sendMessageCalendar(this.replyMarkupObject(this.createNavigationKeyboard(this.checkLanguage(msg.chat.id), new Date(dayjs(this.options.stop_date).format("YYYY-MM-01")))), msg);
                 } else {
-                    this.sendMessageCalendar(this.replyMarkupObject(this.createNavigationKeyboard(now)), msg);
+                    this.sendMessageCalendar(this.replyMarkupObject(this.createNavigationKeyboard(this.checkLanguage(msg.chat.id), now)), msg);
                 }
             } else {
-                this.sendMessageCalendar(this.replyMarkupObject(this.createNavigationKeyboard(now)), msg);
+                this.sendMessageCalendar(this.replyMarkupObject(this.createNavigationKeyboard(this.checkLanguage(msg.chat.id), now)), msg);
             }
         }
     }
-    startTimeSelector(msg) {
-        this.sendMessageTime(this.replyMarkupObject(this.createTimeSelector()), msg);
+    createStartTimeSelector(msg) {
+        this.sendMessageTime(this.replyMarkupObject(this.createTimeSelector(this.checkLanguage(msg.chat.id))), msg);
     }
     clickButtonCalendar(query) {
         if (query.data == ' ') {
@@ -461,8 +520,8 @@ module.exports = class Calendar {
                         this.editMessageReplyMarkupTime(dayjs(code[1]).format("YYYY-MM-DD HH:mm"), query, true);
                     }
                     else {
-                        require('dayjs/locale/' + this.options.language);
-                        res = dayjs(code[1]).locale(this.options.language).format(this.options.date_format);
+                        require('dayjs/locale/' + this.checkLanguage(query.message.chat.id));
+                        res = dayjs(code[1]).locale(this.checkLanguage(query.message.chat.id)).format(this.options.date_format);
                     }
             }
         } else if (code[0] == 't') {
@@ -491,8 +550,20 @@ module.exports = class Calendar {
                         this.deleteMessage(query);
                         this.chats.delete(query.message.chat.id);
                     }
-                    require('dayjs/locale/' + this.options.language);
-                    res = dayjs(code[1]).locale(this.options.language).format(this.options.date_format);
+                    require('dayjs/locale/' + this.checkLanguage(query.message.chat.id));
+                    res = dayjs(code[1]).locale(this.checkLanguage(query.message.chat.id)).format(this.options.date_format);
+            }
+        } else if (code[0] == 'l') {
+            switch (code[2]) {
+                case 'calendar':
+                    this.user_lang.set(query.message.chat.id, code[1]);
+                    this.deleteMessage(query);
+                    this.createStartCalendar(query.message);
+                    break;
+                case 'timeselector':
+                    this.user_lang.set(query.message.chat.id, code[1]);
+                    this.deleteMessage(query);
+                    this.createStartTimeSelector(query.message);
             }
         }
         return res;

@@ -97,5 +97,28 @@
         "tr": "Geri",
         "id": "Balik",
         "uk": "Назад"
+    },
+    "selectlang": {
+        "ru": "Выберите язык:",
+        "en": "Select language:",
+        "de": "Sprache auswählen:",
+        "es": "Seleccionar idioma:",
+        "fr": "Sélectionnez la langue:",
+        "it": "Seleziona la lingua:",
+        "tr": "Dil seçin:",
+        "id": "Pilih bahasa:",
+        "uk": "Виберіть мову:"
+    },
+    "selectuserlang": {
+        "ru": "Русский🇷🇺",
+        "en": "English🇬🇧",
+        "de": "Deutsch🇩🇪",
+        "es": "Español🇪🇸",
+        "fr": "Français🇫🇷",
+        "it": "Italiano🇮🇹",
+        "tr": "Türkçe🇹🇷",
+        "id": "Indonesia🇮🇩",
+        "uk": "Українська🇺🇦"
     }
 }
+  

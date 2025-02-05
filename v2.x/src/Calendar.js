@@ -18,6 +18,7 @@ export class Calendar {
         this.options.time_selector_mod = (typeof options.time_selector_mod === 'undefined') ? false : options.time_selector_mod;
         this.options.time_range = (typeof options.time_range === 'undefined') ? "00:00-23:59" : options.time_range;
         this.options.time_step = (typeof options.time_step === 'undefined') ? "30m" : options.time_step;
+        this.options.user_lang_select = (typeof options.user_lang_select === 'undefined') ? false : options.user_lang_select;
         if (typeof options.start_date === 'undefined') {
             this.options.start_date = false;
         } else {
@@ -47,6 +48,9 @@ export class Calendar {
         if (this.options.lock_date) {
             this.lock_date_array = new Array();
         }
+        if (this.options.user_lang_select) {
+            this.user_lang = new Map();
+        }
         this.bot = (bot === false) ? false : bot;
         this.chats = new Map();
         this.addCustomStartMsg();
@@ -56,17 +60,20 @@ export class Calendar {
     }
     NodeTelegramBotApi = {
         editMessageReplyMarkupCalendar(date, query) {
-            this.bot.editMessageReplyMarkup(this.createNavigationKeyboard(date),{message_id: query.message.message_id, chat_id: query.message.chat.id})
+            this.bot.editMessageReplyMarkup(this.createNavigationKeyboard(this.checkLanguage(query.message.chat.id), date),{message_id: query.message.message_id, chat_id: query.message.chat.id})
         },
         editMessageReplyMarkupTime(date, query, from_calendar) {
-            this.bot.editMessageReplyMarkup(this.createTimeSelector(date, from_calendar),{message_id: query.message.message_id, chat_id: query.message.chat.id})
+            this.bot.editMessageReplyMarkup(this.createTimeSelector(this.checkLanguage(query.message.chat.id), date, from_calendar),{message_id: query.message.message_id, chat_id: query.message.chat.id})
         },
         sendMessageCalendar(menu, msg) {
-            var l = (this.options.time_selector_mod === true) ? lang.selectdatetime[this.options.language] : lang.select[this.options.language];
+            var l = (this.options.time_selector_mod === true) ? lang.selectdatetime[this.checkLanguage(msg.chat.id)] : lang.select[this.checkLanguage(msg.chat.id)];
             this.bot.sendMessage(msg.chat.id, l, menu).then((msg_promise) => this.chats.set(msg_promise.chat.id, msg_promise.message_id));
         },
         sendMessageTime(menu, msg) {
-            this.bot.sendMessage(msg.chat.id, lang.selecttime[this.options.language], menu).then((msg_promise) => this.chats.set(msg_promise.chat.id, msg_promise.message_id));
+            this.bot.sendMessage(msg.chat.id, lang.selecttime[this.checkLanguage(msg.chat.id)], menu).then((msg_promise) => this.chats.set(msg_promise.chat.id, msg_promise.message_id));
+        },
+        sendMessageLanguageSelect(menu, msg) {
+            this.bot.sendMessage(msg.chat.id, lang.selectlang[this.options.language], menu).then((msg_promise) => this.chats.set(msg_promise.chat.id, msg_promise.message_id));
         },
         deleteMessage(query) {
             this.bot.deleteMessage(query.message.chat.id,query.message.message_id);
@@ -125,8 +132,8 @@ export class Calendar {
                         }
                         else {
                             const require = createRequire(import.meta.url);
-                            require('dayjs/locale/' + this.options.language);
-                            res = dayjs(code[1]).locale(this.options.language).format(this.options.date_format);
+                            require('dayjs/locale/' + this.checkLanguage(query.message.chat.id));
+                            res = dayjs(code[1]).locale(this.checkLanguage(query.message.chat.id)).format(this.options.date_format);
                         }
                 }
             } else if (code[0] == 't') {
@@ -156,13 +163,25 @@ export class Calendar {
                             this.chats.delete(query.message.chat.id);
                         }
                         const require = createRequire(import.meta.url);
-                        require('dayjs/locale/' + this.options.language);
-                        res = dayjs(code[1]).locale(this.options.language).format(this.options.date_format);
+                        require('dayjs/locale/' + this.checkLanguage(query.message.chat.id));
+                        res = dayjs(code[1]).locale(this.checkLanguage(query.message.chat.id)).format(this.options.date_format);
+                }
+            } else if (code[0] == 'l') {
+                switch (code[2]) {
+                    case 'calendar':
+                        this.user_lang.set(query.message.chat.id, code[1]);
+                        this.deleteMessage(query);
+                        this.createStartCalendar(query.message);
+                        break;
+                    case 'timeselector':
+                        this.user_lang.set(query.message.chat.id, code[1]);
+                        this.deleteMessage(query);
+                        this.createStartTimeSelector(query.message);
                 }
             }
             return res;
         },
-        startNavCalendar(msg) {
+        createStartCalendar(msg) {
             var now = new Date();
             now.setDate(1);
             now.setHours(0);
@@ -170,47 +189,75 @@ export class Calendar {
             now.setSeconds(0);
             if (this.options.start_date !== false) {
                 if (new Date(dayjs(this.options.start_date).format("YYYY-MM-01")) > now) {
-                    this.sendMessageCalendar(this.replyMarkupObject(this.createNavigationKeyboard(new Date(dayjs(this.options.start_date).format("YYYY-MM-01")))), msg);
+                    this.sendMessageCalendar(this.replyMarkupObject(this.createNavigationKeyboard(this.checkLanguage(msg.chat.id), new Date(dayjs(this.options.start_date).format("YYYY-MM-01")))), msg);
                 } else {
                     if (this.options.stop_date !== false) {
                         if (new Date(this.options.stop_date) < now) {
-                            this.sendMessageCalendar(this.replyMarkupObject(this.createNavigationKeyboard(new Date(dayjs(this.options.start_date).format("YYYY-MM-01")))), msg);
+                            this.sendMessageCalendar(this.replyMarkupObject(this.createNavigationKeyboard(this.checkLanguage(msg.chat.id), new Date(dayjs(this.options.start_date).format("YYYY-MM-01")))), msg);
                         } else {
-                            this.sendMessageCalendar(this.replyMarkupObject(this.createNavigationKeyboard(now)), msg);
+                            this.sendMessageCalendar(this.replyMarkupObject(this.createNavigationKeyboard(this.checkLanguage(msg.chat.id), now)), msg);
                         }
                     } else {
-                        this.sendMessageCalendar(this.replyMarkupObject(this.createNavigationKeyboard(now)), msg);
+                        this.sendMessageCalendar(this.replyMarkupObject(this.createNavigationKeyboard(this.checkLanguage(msg.chat.id), now)), msg);
                     }
                 }
             } else {
                 if (this.options.stop_date !== false) {
                     if (new Date(this.options.stop_date) < now) {
-                        this.sendMessageCalendar(this.replyMarkupObject(this.createNavigationKeyboard(new Date(dayjs(this.options.stop_date).format("YYYY-MM-01")))), msg);
+                        this.sendMessageCalendar(this.replyMarkupObject(this.createNavigationKeyboard(this.checkLanguage(msg.chat.id), new Date(dayjs(this.options.stop_date).format("YYYY-MM-01")))), msg);
                     } else {
-                        this.sendMessageCalendar(this.replyMarkupObject(this.createNavigationKeyboard(now)), msg);
+                        this.sendMessageCalendar(this.replyMarkupObject(this.createNavigationKeyboard(this.checkLanguage(msg.chat.id), now)), msg);
                     }
                 } else {
-                    this.sendMessageCalendar(this.replyMarkupObject(this.createNavigationKeyboard(now)), msg);
+                    this.sendMessageCalendar(this.replyMarkupObject(this.createNavigationKeyboard(this.checkLanguage(msg.chat.id), now)), msg);
                 }
             }
         },
+        createStartTimeSelector(msg) {
+            this.sendMessageTime(this.replyMarkupObject(this.createTimeSelector(this.checkLanguage(msg.chat.id))), msg);
+        },
+        startNavCalendar(msg) {
+            if (this.options.user_lang_select) {
+                this.user_lang.delete(msg.chat.id);
+                this.createLanguageSelectPanel(msg, "calendar");
+            } else {
+                this.createStartCalendar(msg);
+            }
+        },
         startTimeSelector(msg) {
-            this.sendMessageTime(this.replyMarkupObject(this.createTimeSelector()), msg);
+            if (this.options.user_lang_select) {
+                this.user_lang.delete(msg.chat.id);
+                this.createLanguageSelectPanel(msg, "timeselector");
+            } else {
+                this.createStartTimeSelector(msg);
+            }
         }
     };
     Telegraf = {
         editMessageReplyMarkupCalendar(date, ctx) {
-            ctx.editMessageReplyMarkup(this.createNavigationKeyboard(date))
+            ctx.editMessageReplyMarkup(this.createNavigationKeyboard(this.checkLanguage(ctx.callbackQuery.message.chat.id), date))
         },
         editMessageReplyMarkupTime(date, ctx, from_calendar) {
-            ctx.editMessageReplyMarkup(this.createTimeSelector(date, from_calendar))
+            ctx.editMessageReplyMarkup(this.createTimeSelector(this.checkLanguage(ctx.callbackQuery.message.chat.id), date, from_calendar))
         },
         sendMessageCalendar(menu, ctx) {
-            var l = (this.options.time_selector_mod === true) ? lang.selectdatetime[this.options.language] : lang.select[this.options.language];
-            ctx.reply(l, menu).then((msg_promise) => this.chats.set(msg_promise.chat.id, msg_promise.message_id));
+            if (ctx.callbackQuery) {
+                var l = (this.options.time_selector_mod === true) ? lang.selectdatetime[this.checkLanguage(ctx.callbackQuery.message.chat.id)] : lang.select[this.checkLanguage(ctx.callbackQuery.message.chat.id)];
+                ctx.reply(l, menu).then((msg_promise) => this.chats.set(msg_promise.chat.id, msg_promise.message_id));
+            } else {
+                var l = (this.options.time_selector_mod === true) ? lang.selectdatetime[this.checkLanguage(ctx.message.chat.id)] : lang.select[this.checkLanguage(ctx.message.chat.id)];
+                ctx.reply(l, menu).then((msg_promise) => this.chats.set(msg_promise.chat.id, msg_promise.message_id));
+            }
         },
         sendMessageTime(menu, ctx) {
-            ctx.reply(lang.selecttime[this.options.language], menu).then((msg_promise) => this.chats.set(msg_promise.chat.id, msg_promise.message_id));
+            if (ctx.callbackQuery) {
+                ctx.reply(lang.selecttime[this.checkLanguage(ctx.callbackQuery.message.chat.id)], menu).then((msg_promise) => this.chats.set(msg_promise.chat.id, msg_promise.message_id));
+            } else {
+                ctx.reply(lang.selecttime[this.checkLanguage(ctx.message.chat.id)], menu).then((msg_promise) => this.chats.set(msg_promise.chat.id, msg_promise.message_id));
+            }
+        },
+        sendMessageLanguageSelect(menu, ctx) {
+            ctx.reply(lang.selectlang[this.options.language], menu).then((msg_promise) => this.chats.set(msg_promise.chat.id, msg_promise.message_id));
         },
         deleteMessage(ctx) {
             ctx.deleteMessage();
@@ -269,8 +316,8 @@ export class Calendar {
                         }
                         else {
                             const require = createRequire(import.meta.url);
-                            require('dayjs/locale/' + this.options.language);
-                            res = dayjs(code[1]).locale(this.options.language).format(this.options.date_format);
+                            require('dayjs/locale/' + this.checkLanguage(ctx.callbackQuery.message.chat.id));
+                            res = dayjs(code[1]).locale(this.checkLanguage(ctx.callbackQuery.message.chat.id)).format(this.options.date_format);
                         }
                 }
             } else if (code[0] == 't') {
@@ -300,13 +347,25 @@ export class Calendar {
                             this.chats.delete(ctx.callbackQuery.message.chat.id);
                         }
                         const require = createRequire(import.meta.url);
-                        require('dayjs/locale/' + this.options.language);
-                        res = dayjs(code[1]).locale(this.options.language).format(this.options.date_format);
+                        require('dayjs/locale/' + this.checkLanguage(ctx.callbackQuery.message.chat.id));
+                        res = dayjs(code[1]).locale(this.checkLanguage(ctx.callbackQuery.message.chat.id)).format(this.options.date_format);
+                }
+            } else if (code[0] == 'l') {
+                switch (code[2]) {
+                    case 'calendar':
+                        this.user_lang.set(ctx.callbackQuery.message.chat.id, code[1]);
+                        this.deleteMessage(ctx);
+                        this.createStartCalendar(ctx);
+                        break;
+                    case 'timeselector':
+                        this.user_lang.set(ctx.callbackQuery.message.chat.id, code[1]);
+                        this.deleteMessage(ctx);
+                        this.createStartTimeSelector(ctx);
                 }
             }
             return res;
         },
-        startNavCalendar(ctx) {
+        createStartCalendar(ctx) {
             var now = new Date();
             now.setDate(1);
             now.setHours(0);
@@ -314,50 +373,69 @@ export class Calendar {
             now.setSeconds(0);
             if (this.options.start_date !== false) {
                 if (new Date(dayjs(this.options.start_date).format("YYYY-MM-01")) > now) {
-                    this.sendMessageCalendar(this.replyMarkupObject(this.createNavigationKeyboard(new Date(dayjs(this.options.start_date).format("YYYY-MM-01")))), ctx);
+                    this.sendMessageCalendar(this.replyMarkupObject(this.createNavigationKeyboard(this.checkLanguage(typeof ctx.callbackQuery === 'undefined' ? ctx.message.chat.id : ctx.callbackQuery.message.chat.id), new Date(dayjs(this.options.start_date).format("YYYY-MM-01")))), ctx);
                 } else {
                     if (this.options.stop_date !== false) {
                         if (new Date(this.options.stop_date) < now) {
-                            this.sendMessageCalendar(this.replyMarkupObject(this.createNavigationKeyboard(new Date(dayjs(this.options.start_date).format("YYYY-MM-01")))), ctx);
+                            this.sendMessageCalendar(this.replyMarkupObject(this.createNavigationKeyboard(this.checkLanguage(typeof ctx.callbackQuery === 'undefined' ? ctx.message.chat.id : ctx.callbackQuery.message.chat.id), new Date(dayjs(this.options.start_date).format("YYYY-MM-01")))), ctx);
                         } else {
-                            this.sendMessageCalendar(this.replyMarkupObject(this.createNavigationKeyboard(now)), ctx);
+                            this.sendMessageCalendar(this.replyMarkupObject(this.createNavigationKeyboard(this.checkLanguage(typeof ctx.callbackQuery === 'undefined' ? ctx.message.chat.id : ctx.callbackQuery.message.chat.id), now)), ctx);
                         }
                     } else {
-                        this.sendMessageCalendar(this.replyMarkupObject(this.createNavigationKeyboard(now)), ctx);
+                        this.sendMessageCalendar(this.replyMarkupObject(this.createNavigationKeyboard(this.checkLanguage(typeof ctx.callbackQuery === 'undefined' ? ctx.message.chat.id : ctx.callbackQuery.message.chat.id), now)), ctx);
                     }
                 }
             } else {
                 if (this.options.stop_date !== false) {
                     if (new Date(this.options.stop_date) < now) {
-                        this.sendMessageCalendar(this.replyMarkupObject(this.createNavigationKeyboard(new Date(dayjs(this.options.stop_date).format("YYYY-MM-01")))), ctx);
+                        this.sendMessageCalendar(this.replyMarkupObject(this.createNavigationKeyboard(this.checkLanguage(typeof ctx.callbackQuery === 'undefined' ? ctx.message.chat.id : ctx.callbackQuery.message.chat.id), new Date(dayjs(this.options.stop_date).format("YYYY-MM-01")))), ctx);
                     } else {
-                        this.sendMessageCalendar(this.replyMarkupObject(this.createNavigationKeyboard(now)), ctx);
+                        this.sendMessageCalendar(this.replyMarkupObject(this.createNavigationKeyboard(this.checkLanguage(typeof ctx.callbackQuery === 'undefined' ? ctx.message.chat.id : ctx.callbackQuery.message.chat.id), now)), ctx);
                     }
                 } else {
-                    this.sendMessageCalendar(this.replyMarkupObject(this.createNavigationKeyboard(now)), ctx);
+                    this.sendMessageCalendar(this.replyMarkupObject(this.createNavigationKeyboard(this.checkLanguage(typeof ctx.callbackQuery === 'undefined' ? ctx.message.chat.id : ctx.callbackQuery.message.chat.id), now)), ctx);
                 }
             }
         },
+        createStartTimeSelector(ctx) {
+            this.sendMessageTime(this.replyMarkupObject(this.createTimeSelector(this.checkLanguage(typeof ctx.callbackQuery === 'undefined' ? ctx.message.chat.id : ctx.callbackQuery.message.chat.id))), ctx);
+        },
+        startNavCalendar(ctx) {
+            if (this.options.user_lang_select) {
+                this.user_lang.delete(typeof ctx.callbackQuery === 'undefined' ? ctx.message.chat.id : ctx.callbackQuery.message.chat.id);
+                this.createLanguageSelectPanel(ctx, "calendar");
+            } else {
+                this.createStartCalendar(ctx);
+            }
+        },
         startTimeSelector(ctx) {
-            this.sendMessageTime(this.replyMarkupObject(this.createTimeSelector()), ctx);
+            if (this.options.user_lang_select) {
+                this.user_lang.delete(typeof ctx.callbackQuery === 'undefined' ? ctx.message.chat.id : ctx.callbackQuery.message.chat.id);
+                this.createLanguageSelectPanel(ctx, "timeselector");
+            } else {
+                this.createStartTimeSelector(ctx);
+            }
         }
     };
     Telebot = {
         editMessageReplyMarkupCalendar(date, query) {
-            this.bot.editMessageReplyMarkup({messageId: query.message.message_id, chatId: query.message.chat.id}, this.replyMarkupObject(this.createNavigationKeyboard(date)));
+            this.bot.editMessageReplyMarkup({messageId: query.message.message_id, chatId: query.message.chat.id}, this.replyMarkupObject(this.createNavigationKeyboard(this.checkLanguage(query.message.chat.id), date)));
         },
         editMessageReplyMarkupTime(date, query, from_calendar) {
-            this.bot.editMessageReplyMarkup({messageId: query.message.message_id, chatId: query.message.chat.id}, this.replyMarkupObject(this.createTimeSelector(date, from_calendar)));
+            this.bot.editMessageReplyMarkup({messageId: query.message.message_id, chatId: query.message.chat.id}, this.replyMarkupObject(this.createTimeSelector(this.checkLanguage(query.message.chat.id), date, from_calendar)));
         },
         sendMessageCalendar(menu, msg) {
-            var l = (this.options.time_selector_mod === true) ? lang.selectdatetime[this.options.language] : lang.select[this.options.language];
+            var l = (this.options.time_selector_mod === true) ? lang.selectdatetime[this.checkLanguage(msg.chat.id)] : lang.select[this.checkLanguage(msg.chat.id)];
             this.bot.sendMessage(msg.chat.id, l, menu).then((msg_promise) => this.chats.set(msg_promise.chat.id, msg_promise.message_id));
         },
         sendMessageTime(menu, msg) {
-            this.bot.sendMessage(msg.chat.id, lang.selecttime[this.options.language], menu).then((msg_promise) => this.chats.set(msg_promise.chat.id, msg_promise.message_id));
+            this.bot.sendMessage(msg.chat.id, lang.selecttime[this.checkLanguage(msg.chat.id)], menu).then((msg_promise) => this.chats.set(msg_promise.chat.id, msg_promise.message_id));
+        },
+        sendMessageLanguageSelect(menu, msg) {
+            this.bot.sendMessage(msg.chat.id, lang.selectlang[this.options.language], menu).then((msg_promise) => this.chats.set(msg_promise.chat.id, msg_promise.message_id));
         },
         deleteMessage(query) {
-            this.bot.deleteMessage(query.message.chat.id,query.message.message_id)
+            this.bot.deleteMessage(query.message.chat.id, query.message.message_id)
         },
         replyMarkupObject(cnk) {
             var menu = {};
@@ -367,16 +445,28 @@ export class Calendar {
     };
     Grammy = {
         editMessageReplyMarkupCalendar(date, ctx) {
-            ctx.editMessageReplyMarkup(this.replyMarkupObject(this.createNavigationKeyboard(date)));
+            ctx.editMessageReplyMarkup(this.replyMarkupObject(this.createNavigationKeyboard(this.checkLanguage(ctx.callbackQuery.message.chat.id), date)));
         },
         editMessageReplyMarkupTime(date, ctx, from_calendar) {
-            ctx.editMessageReplyMarkup(this.replyMarkupObject(this.createTimeSelector(date, from_calendar)));
+            ctx.editMessageReplyMarkup(this.replyMarkupObject(this.createTimeSelector(this.checkLanguage(ctx.callbackQuery.message.chat.id), date, from_calendar)));
         },
         sendMessageCalendar(menu, ctx) {
-            var l = (this.options.time_selector_mod === true) ? lang.selectdatetime[this.options.language] : lang.select[this.options.language];
-            ctx.reply(l, menu).then((msg_promise) => this.chats.set(msg_promise.chat.id, msg_promise.message_id));
+            if (ctx.callbackQuery) {
+                var l = (this.options.time_selector_mod === true) ? lang.selectdatetime[this.checkLanguage(ctx.callbackQuery.message.chat.id)] : lang.select[this.checkLanguage(ctx.callbackQuery.message.chat.id)];
+                ctx.reply(l, menu).then((msg_promise) => this.chats.set(msg_promise.chat.id, msg_promise.message_id));
+            } else {
+                var l = (this.options.time_selector_mod === true) ? lang.selectdatetime[this.checkLanguage(ctx.message.chat.id)] : lang.select[this.checkLanguage(ctx.message.chat.id)];
+                ctx.reply(l, menu).then((msg_promise) => this.chats.set(msg_promise.chat.id, msg_promise.message_id));
+            }
         },
         sendMessageTime(menu, ctx) {
+            if (ctx.callbackQuery) {
+                ctx.reply(lang.selecttime[this.checkLanguage(ctx.callbackQuery.message.chat.id)], menu).then((msg_promise) => this.chats.set(msg_promise.chat.id, msg_promise.message_id));
+            } else {
+                ctx.reply(lang.selecttime[this.checkLanguage(ctx.message.chat.id)], menu).then((msg_promise) => this.chats.set(msg_promise.chat.id, msg_promise.message_id));
+            }
+        },
+        sendMessageLanguageSelect(menu, ctx) {
             ctx.reply(lang.selecttime[this.options.language], menu).then((msg_promise) => this.chats.set(msg_promise.chat.id, msg_promise.message_id));
         },
         deleteMessage(ctx) {
@@ -410,11 +500,25 @@ export class Calendar {
             return false;
         }
     };
+    checkLanguage(chat_id) {
+        if (this.options.user_lang_select) {
+            return this.user_lang.get(chat_id);
+        }
+        return this.options.language;
+    }
     addCustomStartMsg() {
         if (this.options.custom_start_msg !== false) {
-            lang.select[this.options.language] = this.options.custom_start_msg;
-            lang.selectdatetime[this.options.language] = this.options.custom_start_msg;
-            lang.selecttime[this.options.language] = this.options.custom_start_msg;
+            if (this.options.user_lang_select) {
+                Object.keys(lang.select).forEach(function(key, index) {
+                    lang.select[key] = this.options.custom_start_msg;
+                    lang.selectdatetime[key] = this.options.custom_start_msg;
+                    lang.selecttime[key] = this.options.custom_start_msg;
+                });
+            } else {
+                lang.select[this.options.language] = this.options.custom_start_msg;
+                lang.selectdatetime[this.options.language] = this.options.custom_start_msg;
+                lang.selecttime[this.options.language] = this.options.custom_start_msg;
+            }
         }
     }
     libraryInitialization() {
@@ -423,9 +527,12 @@ export class Calendar {
             this.editMessageReplyMarkupTime = this.NodeTelegramBotApi.editMessageReplyMarkupTime;
             this.sendMessageCalendar = this.NodeTelegramBotApi.sendMessageCalendar;
             this.sendMessageTime = this.NodeTelegramBotApi.sendMessageTime;
+            this.sendMessageLanguageSelect = this.NodeTelegramBotApi.sendMessageLanguageSelect;
             this.deleteMessage = this.NodeTelegramBotApi.deleteMessage;
             this.replyMarkupObject = this.NodeTelegramBotApi.replyMarkupObject;
             this.clickButtonCalendar = this.NodeTelegramBotApi.clickButtonCalendar;
+            this.createStartCalendar = this.NodeTelegramBotApi.createStartCalendar;
+            this.createStartTimeSelector = this.NodeTelegramBotApi.createStartTimeSelector;
             this.startNavCalendar = this.NodeTelegramBotApi.startNavCalendar;
             this.startTimeSelector = this.NodeTelegramBotApi.startTimeSelector;
         } else if (this.options.bot_api == 'telegraf') {
@@ -433,9 +540,12 @@ export class Calendar {
             this.editMessageReplyMarkupTime = this.Telegraf.editMessageReplyMarkupTime;
             this.sendMessageCalendar = this.Telegraf.sendMessageCalendar;
             this.sendMessageTime = this.Telegraf.sendMessageTime;
+            this.sendMessageLanguageSelect = this.Telegraf.sendMessageLanguageSelect;
             this.deleteMessage = this.Telegraf.deleteMessage;
             this.replyMarkupObject = this.Telegraf.replyMarkupObject;
             this.clickButtonCalendar = this.Telegraf.clickButtonCalendar;
+            this.createStartCalendar = this.Telegraf.createStartCalendar;
+            this.createStartTimeSelector = this.Telegraf.createStartTimeSelector;
             this.startNavCalendar = this.Telegraf.startNavCalendar;
             this.startTimeSelector = this.Telegraf.startTimeSelector;
         } else if (this.options.bot_api == 'telebot') {
@@ -443,9 +553,12 @@ export class Calendar {
             this.editMessageReplyMarkupTime = this.Telebot.editMessageReplyMarkupTime;
             this.sendMessageCalendar = this.Telebot.sendMessageCalendar;
             this.sendMessageTime = this.Telebot.sendMessageTime;
+            this.sendMessageLanguageSelect = this.NodeTelegramBotApi.sendMessageLanguageSelect;
             this.deleteMessage = this.Telebot.deleteMessage;
             this.replyMarkupObject = this.Telebot.replyMarkupObject;
             this.clickButtonCalendar = this.NodeTelegramBotApi.clickButtonCalendar;
+            this.createStartCalendar = this.NodeTelegramBotApi.createStartCalendar;
+            this.createStartTimeSelector = this.NodeTelegramBotApi.createStartTimeSelector;
             this.startNavCalendar = this.NodeTelegramBotApi.startNavCalendar;
             this.startTimeSelector = this.NodeTelegramBotApi.startTimeSelector;
         } else if (this.options.bot_api == 'grammy') {
@@ -453,9 +566,12 @@ export class Calendar {
             this.editMessageReplyMarkupTime = this.Grammy.editMessageReplyMarkupTime;
             this.sendMessageCalendar = this.Grammy.sendMessageCalendar;
             this.sendMessageTime = this.Grammy.sendMessageTime;
+            this.sendMessageLanguageSelect = this.Telegraf.sendMessageLanguageSelect;
             this.deleteMessage = this.Grammy.deleteMessage;
             this.replyMarkupObject = this.Grammy.replyMarkupObject;
             this.clickButtonCalendar = this.Telegraf.clickButtonCalendar;
+            this.createStartCalendar = this.Telegraf.createStartCalendar;
+            this.createStartTimeSelector = this.Telegraf.createStartTimeSelector;
             this.startNavCalendar = this.Telegraf.startNavCalendar;
             this.startTimeSelector = this.Telegraf.startTimeSelector;
         }
@@ -494,7 +610,7 @@ export class Calendar {
         var date2 = new Date(year, month, 1);
         return Math.round((date2 - date1) / 1000 / 3600 / 24); 
     }
-    createTimeSelector(date = 'undefined', from_calendar = false) {
+    createTimeSelector(user_lang_t, date = 'undefined', from_calendar = false) {
         var i, j;
         var start, stop;
         var time_range = this.options.time_range.split('-');
@@ -507,7 +623,7 @@ export class Calendar {
         var d = 0, flag_start = 0, flag_stop = 0, fc = 0;
         if (from_calendar === true) {
             cnk.inline_keyboard.push([{},{},{}]);
-            cnk.inline_keyboard[d][0] = {text: lang.back[this.options.language], callback_data: 't_' + dayjs(datetime).format("YYYY-MM-DD") + '_back'};
+            cnk.inline_keyboard[d][0] = {text: lang.back[user_lang_t], callback_data: 't_' + dayjs(datetime).format("YYYY-MM-DD") + '_back'};
             cnk.inline_keyboard[d][1] = {text: dayjs(datetime).format("YYYY-MM-DD"), callback_data: ' '};
             cnk.inline_keyboard[d][2] = {text: ' ', callback_data: ' '};
             fc++;
@@ -576,7 +692,7 @@ export class Calendar {
         cnk.inline_keyboard[d][2] = (flag_stop === 1) ? {text: ' ', callback_data: ' '} :{text: '>', callback_data: 't_' + dayjs(datetime).format("YYYY-MM-DD HH:mm") + '_' + fc + '+'};
         return cnk;
     }
-    createNavigationKeyboard(date) {
+    createNavigationKeyboard(user_lang_t, date) {
         var i, j;
         var cnk = {};
         var cd = this.howMuchDays(date.getFullYear(), date.getMonth() + 1);
@@ -593,7 +709,7 @@ export class Calendar {
         } else {
             cnk.inline_keyboard[0][0] = {text: ' ', callback_data: ' '};
         }
-        cnk.inline_keyboard[0][1] = {text: lang.month3[this.options.language][date.getMonth()] + ' ' + date.getFullYear(), callback_data: ' '};
+        cnk.inline_keyboard[0][1] = {text: lang.month3[user_lang_t][date.getMonth()] + ' ' + date.getFullYear(), callback_data: ' '};
         if (!this.options.stop_date || (this.options.stop_date && dayjs(this.options.stop_date).format('YYYY') > dayjs(date).format('YYYY'))) {
             if (dayjs(date).add(1, 'year').format('YYYY') == dayjs(this.options.stop_date).format('YYYY')) {
                 cnk.inline_keyboard[0][2] = {text: '>>', callback_data: 'n_' + dayjs(this.options.stop_date).subtract(1, 'year').format("YYYY-MM") + '_++'};
@@ -605,7 +721,7 @@ export class Calendar {
         }
         cnk.inline_keyboard.push([{},{},{},{},{},{},{}]);
         for(j = 0; j < 7; j++) {
-            cnk.inline_keyboard[1][j] = {text: lang.week[this.options.language][this.weekDaysButtons(j)], callback_data: ' '};
+            cnk.inline_keyboard[1][j] = {text: lang.week[user_lang_t][this.weekDaysButtons(j)], callback_data: ' '};
         }
         var d = 1;
         for (i = 2; i <= cr - 2; i++) {
@@ -636,6 +752,15 @@ export class Calendar {
             cnk.inline_keyboard[cr - 1][2] = {text: ' ', callback_data: ' '};
         }
         return cnk;
+    }
+    createLanguageSelectPanel(msg, type) {
+        var cnk = {};
+        cnk.resize_keyboard = true;
+        cnk.inline_keyboard = [];
+        Object.keys(lang.selectlang).forEach(function(key, index) {
+            cnk.inline_keyboard.push([{text: lang.selectuserlang[key], callback_data: 'l_' + key + '_' + type}]);
+        });
+        this.sendMessageLanguageSelect(this.replyMarkupObject(cnk), msg);
     }
     changeLang(lang) {
         this.options.language = lang;
