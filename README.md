@@ -298,7 +298,8 @@ bot.start();
     stop_date: false,                              //Maximum date of the calendar in the format "YYYY-MM-DD" or "YYYY-MM-DD HH:mm" or "now"
     custom_start_msg: false,                       //Text of the message sent with the calendar/time selector
     lock_date: false,                              //Enable blocked dates list
-    lock_datetime: false                           //Enable list of blocked dates and times
+    lock_datetime: false,                          //Enable list of blocked dates and times
+    user_lang_select: false                        //Ability to select the user's language
 }
 ```
 
