@@ -1,6 +1,6 @@
 {
   "name": "telegram-inline-calendar",
-  "version": "2.3.0",
+  "version": "2.3.1",
   "description": "Date and time picker and inline calendar for Node.js telegram bots",
   "main": "./index.js",
   "type": "module",

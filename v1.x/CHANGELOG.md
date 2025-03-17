@@ -4,6 +4,16 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## [1.9.1](https://github.com/VDS13/telegram-inline-calendar/compare/1.9.0...1.9.1) - 2025-03-17
+
+### Added:
+
+* Brazilian Portuguese (pt-br) language support.
+
+### Changed:
+
+* Spanish language (corrected).
+
 ## [1.9.0](https://github.com/VDS13/telegram-inline-calendar/compare/1.8.0...1.9.0) - 2025-02-05
 
 ### Added:

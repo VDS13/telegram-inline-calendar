@@ -82,7 +82,7 @@ Calendar generation.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| language | <code>String</code> | <code>undefined</code> | Language (en/es/de/es/fr/it/tr/id/uk). |
+| language | <code>String</code> | <code>undefined</code> | Language (en/es/de/es/fr/it/tr/id/uk/pt-br). |
 | date | <code>Date</code> | Year and month for which you want to get a calendar. |
 
 <a name="Calendar+createTimeSelector"></a>
@@ -95,7 +95,7 @@ Time selector generation.
 
 | Param | Type | Default | Description |
 | --- | --- | --- | --- |
-| language | <code>String</code> | <code>undefined</code> | Language (en/es/de/es/fr/it/tr/id/uk). |
+| language | <code>String</code> | <code>undefined</code> | Language (en/es/de/es/fr/it/tr/id/uk/pt-br). |
 | date | <code>Date</code> | <code>undefined</code> | Date Objects for which you want to get a time selector. |
 | from_calendar | <code>Boolean</code> | <code>false</code> | Calling the time selector from the calendar. |
 
@@ -108,4 +108,4 @@ Changes the language of the bot messages.
 
 | Param | Type | Default | Description |
 | --- | --- | --- | --- |
-| language | <code>String</code> | <code>undefined</code> | Language (en/es/de/es/fr/it/tr/id/uk). |
+| language | <code>String</code> | <code>undefined</code> | Language (en/es/de/es/fr/it/tr/id/uk/pt-br). |
