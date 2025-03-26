@@ -19,6 +19,7 @@ export class Calendar {
         this.options.time_range = (typeof options.time_range === 'undefined') ? "00:00-23:59" : options.time_range;
         this.options.time_step = (typeof options.time_step === 'undefined') ? "30m" : options.time_step;
         this.options.user_lang_select = (typeof options.user_lang_select === 'undefined') ? false : options.user_lang_select;
+        this.options.skip_years = (typeof options.skip_years === 'undefined') ? false : options.skip_years;
         if (typeof options.start_date === 'undefined') {
             this.options.start_date = false;
         } else {
@@ -92,6 +93,16 @@ export class Calendar {
             var res = -1;
             if (code[0] == 'n') {
                 switch (code[2]) {
+                    case '+++':
+                        date = new Date(code[1]);
+                        date.setFullYear(date.getFullYear() + this.options.skip_years);
+                        this.editMessageReplyMarkupCalendar(date, query);
+                        break;
+                    case '---':
+                        date = new Date(code[1]);
+                        date.setFullYear(date.getFullYear() - this.options.skip_years);
+                        this.editMessageReplyMarkupCalendar(date, query);
+                        break;
                     case '++':
                         date = new Date(code[1]);
                         date.setFullYear(date.getFullYear() + 1);
@@ -276,6 +287,16 @@ export class Calendar {
             var res = -1;
             if (code[0] == 'n') {
                 switch (code[2]) {
+                    case '+++':
+                        date = new Date(code[1]);
+                        date.setFullYear(date.getFullYear() + this.options.skip_years);
+                        this.editMessageReplyMarkupCalendar(date, ctx);
+                        break;
+                    case '---':
+                        date = new Date(code[1]);
+                        date.setFullYear(date.getFullYear() - this.options.skip_years);
+                        this.editMessageReplyMarkupCalendar(date, ctx);
+                        break;
                     case '++':
                         date = new Date(code[1]);
                         date.setFullYear(date.getFullYear() + 1);
@@ -699,25 +720,66 @@ export class Calendar {
         var cr = this.colRowNavigation(date, cd);
         cnk.resize_keyboard = true;
         cnk.inline_keyboard = [];
-        cnk.inline_keyboard.push([{},{},{}]);
-        if (!this.options.start_date || (this.options.start_date && dayjs(date).format('YYYY') > dayjs(this.options.start_date).format('YYYY'))) {
-            if (dayjs(date).subtract(1, 'year').format('YYYY') == dayjs(this.options.start_date).format('YYYY')) {
-                cnk.inline_keyboard[0][0] = {text: '<<', callback_data: 'n_' + dayjs(this.options.start_date).add(1, 'year').format("YYYY-MM") + '_--'};
+        if (!this.options.skip_years || this.options.skip_years <= 1 || this.options.skip_years > 10) {
+            cnk.inline_keyboard.push([{},{},{}]);
+            if (!this.options.start_date || (this.options.start_date && dayjs(date).format('YYYY') > dayjs(this.options.start_date).format('YYYY'))) {
+                if (dayjs(date).subtract(1, 'year').format('YYYY') == dayjs(this.options.start_date).format('YYYY')) {
+                    cnk.inline_keyboard[0][0] = {text: '<<', callback_data: 'n_' + dayjs(this.options.start_date).add(1, 'year').format("YYYY-MM") + '_--'};
+                } else {
+                    cnk.inline_keyboard[0][0] = {text: '<<', callback_data: 'n_' + dayjs(date).format("YYYY-MM") + '_--'};
+                }
             } else {
-                cnk.inline_keyboard[0][0] = {text: '<<', callback_data: 'n_' + dayjs(date).format("YYYY-MM") + '_--'};
+                cnk.inline_keyboard[0][0] = {text: ' ', callback_data: ' '};
+            }
+            cnk.inline_keyboard[0][1] = {text: lang.month3[user_lang_t][date.getMonth()] + ' ' + date.getFullYear(), callback_data: ' '};
+            if (!this.options.stop_date || (this.options.stop_date && dayjs(this.options.stop_date).format('YYYY') > dayjs(date).format('YYYY'))) {
+                if (dayjs(date).add(1, 'year').format('YYYY') == dayjs(this.options.stop_date).format('YYYY')) {
+                    cnk.inline_keyboard[0][2] = {text: '>>', callback_data: 'n_' + dayjs(this.options.stop_date).subtract(1, 'year').format("YYYY-MM") + '_++'};
+                } else {
+                    cnk.inline_keyboard[0][2] = {text: '>>', callback_data: 'n_' + dayjs(date).format("YYYY-MM") + '_++'};
+                }
+            } else {
+                cnk.inline_keyboard[0][2] = {text: ' ', callback_data: ' '};
             }
         } else {
-            cnk.inline_keyboard[0][0] = {text: ' ', callback_data: ' '};
-        }
-        cnk.inline_keyboard[0][1] = {text: lang.month3[user_lang_t][date.getMonth()] + ' ' + date.getFullYear(), callback_data: ' '};
-        if (!this.options.stop_date || (this.options.stop_date && dayjs(this.options.stop_date).format('YYYY') > dayjs(date).format('YYYY'))) {
-            if (dayjs(date).add(1, 'year').format('YYYY') == dayjs(this.options.stop_date).format('YYYY')) {
-                cnk.inline_keyboard[0][2] = {text: '>>', callback_data: 'n_' + dayjs(this.options.stop_date).subtract(1, 'year').format("YYYY-MM") + '_++'};
+            cnk.inline_keyboard.push([{},{},{},{},{}]);
+            if (!this.options.start_date || (this.options.start_date && dayjs(date).subtract(this.options.skip_years, 'year').format('YYYY') >= dayjs(this.options.start_date).format('YYYY'))) {
+                if (dayjs(date).subtract(this.options.skip_years, 'year').format('YYYY') == dayjs(this.options.start_date).format('YYYY')) {
+                    cnk.inline_keyboard[0][0] = {text: `<<${this.options.skip_years}`, callback_data: 'n_' + dayjs(this.options.start_date).add(this.options.skip_years, 'year').format("YYYY-MM") + '_---'};
+                } else {
+                    cnk.inline_keyboard[0][0] = {text: `<<${this.options.skip_years}`, callback_data: 'n_' + dayjs(date).format("YYYY-MM") + '_---'};
+                }
             } else {
-                cnk.inline_keyboard[0][2] = {text: '>>', callback_data: 'n_' + dayjs(date).format("YYYY-MM") + '_++'};
+                cnk.inline_keyboard[0][0] = {text: ' ', callback_data: ' '};
             }
-        } else {
+            if (!this.options.start_date || (this.options.start_date && dayjs(date).format('YYYY') > dayjs(this.options.start_date).format('YYYY'))) {
+                if (dayjs(date).subtract(1, 'year').format('YYYY') == dayjs(this.options.start_date).format('YYYY')) {
+                    cnk.inline_keyboard[0][1] = {text: '<<', callback_data: 'n_' + dayjs(this.options.start_date).add(1, 'year').format("YYYY-MM") + '_--'};
+                } else {
+                    cnk.inline_keyboard[0][1] = {text: '<<', callback_data: 'n_' + dayjs(date).format("YYYY-MM") + '_--'};
+                }
+            } else {
+                cnk.inline_keyboard[0][1] = {text: ' ', callback_data: ' '};
+            }
             cnk.inline_keyboard[0][2] = {text: ' ', callback_data: ' '};
+            if (!this.options.stop_date || (this.options.stop_date && dayjs(this.options.stop_date).format('YYYY') > dayjs(date).format('YYYY'))) {
+                if (dayjs(date).add(1, 'year').format('YYYY') == dayjs(this.options.stop_date).format('YYYY')) {
+                    cnk.inline_keyboard[0][3] = {text: '>>', callback_data: 'n_' + dayjs(this.options.stop_date).subtract(1, 'year').format("YYYY-MM") + '_++'};
+                } else {
+                    cnk.inline_keyboard[0][3] = {text: '>>', callback_data: 'n_' + dayjs(date).format("YYYY-MM") + '_++'};
+                }
+            } else {
+                cnk.inline_keyboard[0][3] = {text: ' ', callback_data: ' '};
+            }
+            if (!this.options.stop_date || (this.options.stop_date && dayjs(this.options.stop_date).format('YYYY') >= dayjs(date).add(this.options.skip_years, 'year').format('YYYY'))) {
+                if (dayjs(date).add(this.options.skip_years, 'year').format('YYYY') == dayjs(this.options.stop_date).format('YYYY')) {
+                    cnk.inline_keyboard[0][4] = {text: `${this.options.skip_years}>>`, callback_data: 'n_' + dayjs(this.options.stop_date).subtract(this.options.skip_years, 'year').format("YYYY-MM") + '_+++'};
+                } else {
+                    cnk.inline_keyboard[0][4] = {text: `${this.options.skip_years}>>`, callback_data: 'n_' + dayjs(date).format("YYYY-MM") + '_+++'};
+                }
+            } else {
+                cnk.inline_keyboard[0][4] = {text: ' ', callback_data: ' '};
+            }
         }
         cnk.inline_keyboard.push([{},{},{},{},{},{},{}]);
         for(j = 0; j < 7; j++) {
@@ -745,7 +807,11 @@ export class Calendar {
         } else {
             cnk.inline_keyboard[cr - 1][0] = {text: ' ', callback_data: ' '};
         }
-        cnk.inline_keyboard[cr - 1][1] = {text: ' ', callback_data: ' '};
+        if (!this.options.skip_years || this.options.skip_years <= 1 || this.options.skip_years > 10) {
+            cnk.inline_keyboard[cr - 1][1] = {text: ' ', callback_data: ' '};
+        } else {
+            cnk.inline_keyboard[cr - 1][1] = {text: lang.month3[user_lang_t][date.getMonth()] + ' ' + date.getFullYear(), callback_data: ' '};
+        }
         if (!this.options.stop_date || (this.options.stop_date && Math.round(dayjs(this.options.stop_date).date(1).diff(dayjs(date).date(1), 'month', true)) > 0)) {
             cnk.inline_keyboard[cr - 1][2] = {text: '>', callback_data: 'n_' + dayjs(date).format("YYYY-MM") + '_+'};
         } else {

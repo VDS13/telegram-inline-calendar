@@ -4,6 +4,16 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## [1.10.0](https://github.com/VDS13/telegram-inline-calendar/compare/1.9.1...1.10.0) - 2025-03-26
+
+### Added:
+
+* Option `skip_years` allows you to skip several years when selecting a date (1 < `skip_years` < 10).
+
+<div align="left">
+<img src="https://github.com/VDS13/telegram-inline-calendar/blob/main/img/ex9.gif" width="300"/>
+</div>
+
 ## [1.9.1](https://github.com/VDS13/telegram-inline-calendar/compare/1.9.0...1.9.1) - 2025-03-17
 
 ### Added:

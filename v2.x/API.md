@@ -35,6 +35,7 @@ Calendar
 | [options.custom_start_msg] | <code>Boolean\|String</code> | <code>false</code> | Text of the message sent with the calendar/time selector. |
 | [options.lock_date] | <code>Boolean</code> | <code>false</code> | Enable blocked dates list. |
 | [options.lock_datetime] | <code>Boolean</code> | <code>false</code> | Enable list of blocked dates and times. |
+| [options.skip_years] | <code>Boolean\|Number</code> | <code>false</code> | Number of years to skip (1 < `skip_years` < 10). |
 | [lock_date_array] | <code>Array</code> | <code>[]</code> | Аrray of blocked dates in string format in the format `"YYYY-MM-DD"`. |
 | [lock_datetime_array] | <code>Array</code> | <code>[]</code> | Аrray of blocked dates and times in string format in the format `"YYYY-MM-DD HH:mm"`. |
 

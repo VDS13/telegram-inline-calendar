@@ -300,7 +300,8 @@ bot.start();
     custom_start_msg: false,                       //Text of the message sent with the calendar/time selector
     lock_date: false,                              //Enable blocked dates list
     lock_datetime: false,                          //Enable list of blocked dates and times
-    user_lang_select: false                        //Ability to select the user's language
+    user_lang_select: false,                       //Ability to select the user's language
+    slip_years: false                              //Number of years to skip (1 < `skip_years` < 10)
 }
 ```
 
